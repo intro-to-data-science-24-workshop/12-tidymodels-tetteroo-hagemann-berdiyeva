@@ -1,0 +1,70 @@
+---
+title: "Modelling with `tidymodels`"
+subtitle: "Practice Materials"
+author: "Franke Tetteroo, Linus Hagemann & Sofiya Berdiyeva"
+date: "28.10.2024"
+output: 
+    rmdformats::robobook:
+    toc: TRUE
+    df_print: paged
+    number_sections: FALSE
+    highlight: tango
+    toc_depth: 3
+    toc_float: true
+    self_contained: false
+---
+
+```{=html}
+<style>
+.h1,h2,h3 {
+color:#2f1a61;
+}
+
+.subtitle, section.normal {
+color:#291854;
+}
+
+.title {
+color:#cc0065;
+}
+
+.nav-pills>li>a{
+color: #2f1a61;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+color: #fff;
+background-color: #2f1a61;
+}
+
+.nav-tabs>li>a{
+color: #2f1a61;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+color: #fff;
+background-color: #2f1a61;
+}
+
+</style>
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+# h1
+
+## h2 
+
+### demo on how to make tabs! {.tabset}
+
+#### test tabbing
+including `{.tabset}` next to a heading will make all subheadings (one level presumably) into tabs
+
+#### give me tabs!
+to cancel it just put a higher order heading
+
+### content after tabs
+
+# Sources
+
+Include Sources Here
