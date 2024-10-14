@@ -51,11 +51,86 @@ background-color: #2f1a61;
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
-# h1
 
-## h2 
+# Example.
 
-### demo on how to make tabs! {.tabset}
+1. Loading and transforming the data with recipe
+
+
+2. Sampling & bootstrapping
+
+
+3. Model creation
+
+
+4. Evaluation
+
+
+
+```{r eval = FALSE}
+# parsnip model ALWAYS returns the results as a data frame 
+predictions <- bind_cols(
+  select(auto_test, mpg),
+  predict(model, auto_test)
+)
+
+# And here comes yardstick
+# When "truth" is a factor: accuracy and the Kappa
+# When "truth" is numeric: rmse, rsq and mae.
+
+# Estimate one or more common performance estimates depending on the class of truth 
+metrics(predictions, truth = older, estimate = .pred)
+
+# Regression metrics
+reg_metrics <- metric_set(huber_loss, iic, mape, mase)
+
+# The returned function has the same arguments as metrics()
+reg_metric(predictions, truth = mpg, estimate = .pred)
+
+```
+
+
+# Exercise.
+
+1. Loading and transforming the data with recipe
+
+
+2. Sampling & bootstrapping
+
+
+3. Model creation
+
+
+4. Evaluation
+
+```{r eval = FALSE}
+# TO BE CORRECTED!!!
+
+predictions_lm <- bind_cols(
+ select(auto_test, mpg),
+ predict(linreg_reg_model, auto_test)
+)
+
+# One or more common performance estimates
+# metrics(data= YOUR CODE, truth = YOUR CODE, estimate = YOUR CODE)
+
+# Calculate symmetric mean absolute percentage error
+# Who has the lowest value?
+
+# Answer: smape(predictions_lm, truth = mpg, estimate = .pred)
+
+# OR
+
+# Calculate the coefficient of determination (the traditional one)
+# Who has the highest value?
+
+# Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)
+```
+
+
+
+
+## demo on how to make tabs! {.tabset}
 
 #### test tabbing
 including `{.tabset}` next to a heading will make all subheadings (one level presumably) into tabs
