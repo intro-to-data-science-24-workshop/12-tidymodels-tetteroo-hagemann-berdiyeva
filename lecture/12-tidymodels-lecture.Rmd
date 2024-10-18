@@ -98,11 +98,11 @@ Measuring the accuracy in prediction of continuous numeric values
 |-----------------------|------------------------------|------------------------------------|
 | ccc()                 | Concordance Correlation Coefficient | -1 < x < 1, the closer to 1 the better |
 | iic()                 | Index of Ideality of Correlation | 0 < x < 1, the higher the better    |
-| **mae()**                 | Mean Absolute Error           | 0 < x < 1, the lower the better     |
-| mape()                | Mean Absolute Percentage Error | 0 < x < 1, the lower the better    |
-| msd()                 | Mean Squared Deviation        | 0 < x < 1, the lower the better     |
-| poisson_log_loss()    | Poisson Log Loss              | 0 < x < 1, the lower the better     |
-| **rmse()**                | Root Mean Squared Error       | 0 < x < 1, the lower the better     |
+| **mae()**                 | Mean Absolute Error           | 0 < x < $\infty$, the lower the better     |
+| mape()                | Mean Absolute Percentage Error | 0 < x < $\infty$, the lower the better    |
+| msd()                 | Mean Squared Deviation        | 0 < x < $\infty$, the lower the better     |
+| poisson_log_loss()    | Poisson Log Loss              | 0 < x < $\infty$, the lower the better     |
+| **rmse()**                | Root Mean Squared Error       | 0 < x < $\infty$, the lower the better     |
 | rpd()                 | Relative Percent Difference    | 0 < x < 1, the lower the better     |
 | **rsq_trad()**            | Traditional R-squared         | 0 < x < 1, the closer to 1 the better |
 | smape()               | Symmetric Mean Absolute Percentage Error | 0 < x < 1, the lower the better |
