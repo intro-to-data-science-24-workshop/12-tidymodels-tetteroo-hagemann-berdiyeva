@@ -31,8 +31,10 @@ recipe(ames_workshop) %>%
 ```{r}
 model <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(Sale_Price ~ ., data = ames)
-
+  fit(Sale_Price ~ ., data = ames_workshop)
 ```
 
+```{r}
+save(ames_workshop, file = "ames_workshop.RData")
+```
 
