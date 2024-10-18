@@ -38,6 +38,81 @@ class: center, middle, inverse, title-slide
 
 
 
+
+
+---
+# **yardstick** package
+
+Contains tools for computing statistical performance metrics
+
+- Consistent Syntax 
+- Wide Range of Metrics (43)
+- Grouped calculations (e.g. `demographic_parity()`)
+- Customization (e.g. `new-metric()` see more on [custom performance metrics](https://www.tidymodels.org/learn/develop/metrics/))
+
+`metrics(data, truth, estimate, ..., na_rm = TRUE, options = list())`
+
+[Manual](https://cran.r-project.org/web/packages/yardstick/yardstick.pdf)
+
+&lt;div align="center"&gt;
+&lt;img src="pics/Metrics_meme.png" height=300&gt;
+&lt;/div&gt;
+
+
+---
+# Classification metrics
+
+Measuring the accuracy in prediction of categories
+
+| Function         | Name                              | Interpretation                   |
+|------------------|-----------------------------------|----------------------------------|
+| accuracy()       | Accuracy                          | 0 &lt; x &lt; 1, the higher the better |
+| f_meas()         | F-measure                         | 0 &lt; x &lt; 1, the higher the better |
+| kap()            | Cohen's Kappa                     | -1 &lt; x &lt; 1, the closer to 1 the better |
+| mcc()            | Matthews Correlation Coefficient   | -1 &lt; x &lt; 1, the closer to 1 the better |
+| npv()            | Negative Predictive Value         | 0 &lt; x &lt; 1, the higher the better |
+| ppv()            | Positive Predictive Value         | 0 &lt; x &lt; 1, the higher the better |
+| precision()          | Precision                   | 0 &lt; x &lt; 1, the higher the better   |
+| recall()             | Recall                      | 0 &lt; x &lt; 1, the higher the better   |
+| spec()               | Specificity                 | 0 &lt; x &lt; 1, the higher the better   |
+| roc_auc()            | Area Under ROC Curve         | 0.5 &lt; x &lt; 1, the higher the better |
+| pr_auc()             | Area Under PR Curve          | 0 &lt; x &lt; 1, the higher the better   |
+
+
+---
+# Regression metrics
+
+Measuring the accuracy in prediction of continuous numeric values
+
+| Function              | Name                         | Interpretation                     |
+|-----------------------|------------------------------|------------------------------------|
+| ccc()                 | Concordance Correlation Coefficient | -1 &lt; x &lt; 1, the closer to 1 the better |
+| iic()                 | Index of Ideality of Correlation | 0 &lt; x &lt; 1, the higher the better    |
+| **mae()**                 | Mean Absolute Error           | 0 &lt; x &lt; 1, the lower the better     |
+| mape()                | Mean Absolute Percentage Error | 0 &lt; x &lt; 1, the lower the better    |
+| msd()                 | Mean Squared Deviation        | 0 &lt; x &lt; 1, the lower the better     |
+| poisson_log_loss()    | Poisson Log Loss              | 0 &lt; x &lt; 1, the lower the better     |
+| **rmse()**                | Root Mean Squared Error       | 0 &lt; x &lt; 1, the lower the better     |
+| rpd()                 | Relative Percent Difference    | 0 &lt; x &lt; 1, the lower the better     |
+| **rsq_trad()**            | Traditional R-squared         | 0 &lt; x &lt; 1, the closer to 1 the better |
+| smape()               | Symmetric Mean Absolute Percentage Error | 0 &lt; x &lt; 1, the lower the better |
+
+---
+# For further investigation
+
+Our links here
+
+
+
+
+
+
+
+
+
+
+---
+
 # Table of contents
 
 1. [Project management](#projects)&lt;sup&gt;1&lt;/sup&gt;
@@ -514,7 +589,7 @@ $ which git
 ```
 
 ```
-## /usr/bin/git
+## /c/progra~1/git/cmd/git
 ```
 
 And here's how you can check the version:
@@ -525,7 +600,7 @@ $ git --version
 ```
 
 ```
-## git version 2.34.1
+## git version 2.46.0.windows.1
 ```
 
 If you want to install (or update) Git on your Mac/Linux machine, I recommend using [Homebrew](https://brew.sh/), "the missing package manager for macOS (or Linux)":
