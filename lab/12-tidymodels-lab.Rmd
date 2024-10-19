@@ -46,14 +46,39 @@ color: #fff;
 background-color: #2f1a61;
 }
 
+div.danger {background-color:#c42d2d; color:white; border-radius: 5px; padding: 20px;}
+
 </style>
 ```
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-# Example.
+# Introduction
 
+This session is designed to guide you through the entire modelling process to familiarize yourself with some of the power of the packages in `tidymodels`. 
+
+We will cover:
+
+- splitting your data-set into a training and a test set using `rsample`,
+- pre-processing your data-set using `recipes`,
+- fitting a model using `parsnip`,
+- and finally evaluate the performance of the model using `yardstick`.
+
+For those of you attending this session live - stay tuned, as __there will be a price to be won in the end__!
+
+![](./attendance_price.jpg)
+
+::: danger
+⚠️ __Attention__
+
+Modelling is an extremely complex topic. Choosing an appropriate model for a specific task requires theoretical deliberation and careful consideration of the data at hand. As was seen in the lecture, hand-picking specific model configurations can rightfully be criticized and requires justification grounded in theory.
+
+All of these are outside of the scope of this workshop - we aim at giving you a glimpse on how to use selected `R` packages. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
+:::
+
+# Example.
+    
 1. Loading and transforming the data with recipe
 
 
