@@ -49,6 +49,55 @@ knit_hooks$set(
 
 
 
+# **Rsample** package
+
+Useful to split your data into testing and training subsets:
+
+<div align="right">
+<img src="pics/Datasplittingscheme.png" height=300>
+</div>
+
+Why do we care? 
+- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
+- The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
+  - If we run multiple models on the test set, we start to optimise our model to the test set instead of focusing on the model's general ability to explain the dataset. 
+---
+# **Different ways of splitting your dataset**
+- Initial split (training vs testing)
+- V-fold
+- Bootstraps
+- Rolling forecast
+
+<div align="center">
+<img src="lecture/pics/One_Does_Not_Simply_Split.jpg" height=300>
+</div>
+
+---
+# V-fold
+
+
+
+<div align="center">
+<img src="lecture/pics/V-fold.png" height=300>
+</div>
+
+---
+# Bootstrap
+
+Useful to split your data into testing and training subsets:
+
+<div align="center">
+<img src="lecture/pics/Bootstrap.png" height=300>
+</div>
+
+---
+# Rolling Forecast
+
+Useful to split your data into testing and training subsets:
+
+<div align="center">
+<img src="lecture/pics/RollingForecasting.png" height=300>
+</div>
 
 ---
 # **yardstick** package

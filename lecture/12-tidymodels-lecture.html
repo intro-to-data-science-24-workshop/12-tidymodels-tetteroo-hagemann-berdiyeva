@@ -39,6 +39,55 @@ class: center, middle, inverse, title-slide
 
 
 
+# **Rsample** package
+
+Useful to split your data into testing and training subsets:
+
+&lt;div align="right"&gt;
+&lt;img src="pics/Datasplittingscheme.png" height=300&gt;
+&lt;/div&gt;
+
+Why do we care? 
+- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
+- The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
+  - If we run multiple models on the test set, we start to optimise our model to the test set instead of focusing on the model's general ability to explain the dataset. 
+---
+# **Different ways of splitting your dataset**
+- Initial split (training vs testing)
+- V-fold
+- Bootstraps
+- Rolling forecast
+
+&lt;div align="center"&gt;
+&lt;img src="lecture/pics/One_Does_Not_Simply_Split.jpg" height=300&gt;
+&lt;/div&gt;
+
+---
+# V-fold
+
+
+
+&lt;div align="right"&gt;
+&lt;img src="lecture/pics/V-fold.png" height=300&gt;
+&lt;/div&gt;
+
+---
+# Bootstrap
+
+Useful to split your data into testing and training subsets:
+
+&lt;div align="right"&gt;
+&lt;img src="lecture/pics/Bootstrap.png" height=300&gt;
+&lt;/div&gt;
+
+---
+# Rolling Forecast
+
+Useful to split your data into testing and training subsets:
+
+&lt;div align="right"&gt;
+&lt;img src="lecture/pics/RollingForecasting.png" height=300&gt;
+&lt;/div&gt;
 
 ---
 # **yardstick** package
@@ -338,7 +387,7 @@ For R projects
 - RStudio creates a "table of contents" when you name your code chunks as follows (`#` followed by title and `---`):
 
 
-``` r
+```r
 R&gt; # Import data --------------
 R&gt; 
 R&gt; dat &lt;- read_csv("dat.csv")
@@ -584,29 +633,29 @@ Again, Git is an independent piece of software. You need to have it installed on
 Chances are that that's already the case. Here's how you can check using the command line:
 
 
-``` bash
+```bash
 $ which git
 ```
 
 ```
-## /c/progra~1/git/cmd/git
+## /usr/bin/git
 ```
 
 And here's how you can check the version:
 
 
-``` bash
+```bash
 $ git --version
 ```
 
 ```
-## git version 2.46.0.windows.1
+## git version 2.24.3 (Apple Git-128)
 ```
 
 If you want to install (or update) Git on your Mac/Linux machine, I recommend using [Homebrew](https://brew.sh/), "the missing package manager for macOS (or Linux)":
 
 
-``` bash
+```bash
 $ brew install git
 ```
 
@@ -622,14 +671,14 @@ This is particularly important when you work with Git but without the GitHub ove
 Have you already introduced yourself to Git? Find it out:
 
 
-``` bash
+```bash
 $ git config --list
 ```
 
 Still have to introduce yourself? To that end, we set our user name and email address like this:
 
 
-``` bash
+```bash
 $ git config --global user.name 'simonmunzert'
 $ git config --global user.email 'simon.munzert@example.com'
 ```
