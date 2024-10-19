@@ -77,6 +77,45 @@ Modelling is an extremely complex topic. Choosing an appropriate model for a spe
 All of these are outside of the scope of this workshop - we aim at giving you a glimpse on how to use selected `R` packages. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
 :::
 
+# Our Dataset
+
+Throughout this exercise, we are working with a specially prepared version of the [`ames`](https://jse.amstat.org/v19n3/decock/DataDocumentation.txt) data-set, which is part of the `modeldata` package. The data-set contains information about houses in the region of Ames in Iowa (US). We prepared a smaller version of the data-set for this unit, in order to reduce the amount of different features (columns) to understand in the data-set and introduce some need for pre-processing.
+
+```{r}
+# install.packages("tidymodels")
+library(tidymodels)
+load("ames_workshop.RData") # executing this line will lead to the `ames_workshop` df becoming available in your environment
+ames_workshop
+```
+
+As we can see, there are close to 3000 houses in the data-set, with 16 data points for each house.
+
+The following table gives you a quick overview of the available features (in the order in which the columns appear in the data frame). More detailed information can be found [here](https://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
+
+| Name         | Description                                                       |
+|--------------|-------------------------------------------------------------------|
+| MS_Zoning    | Identifies the general zoning classification of the sale.         |
+| Lot_Frontage | Linear feet of street connected to property                       |
+| Lot_Area     | Lot size in square feet                                           |
+| Utilities    | Type of utilities available                                       |
+| Neighborhood | Physical locations within Ames city limits (map available)        |
+| Condition_1  | Proximity to various conditions                                   |
+| Condition_2  | Proximity to various conditions (if more than one is present)     |
+| Overall_Cond | Rates the overall condition of the house                          |
+| Exter_Cond   | Evaluates the present condition of the material on the exterior   |
+| Foundation   | Type of foundation                                                |
+| Heating      | Type of heating                                                   |
+| Year_Sold    | Year Sold (YYYY)                                                  |
+| Garage_Area  | Size of garage in square feet                                     |
+| Mo_Sold      | Month Sold (MM)                                                   |
+| Sale_Price   | Sale price \$$                                                    |
+| secret_sauce | A special feature just for you! Can this improve our predictions? |
+
+Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task! 
+
+# Splitting the Data-Set
+
+
 # Example.
     
 1. Loading and transforming the data with recipe
@@ -151,19 +190,6 @@ predictions_lm <- bind_cols(
 
 # Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)
 ```
-
-
-
-
-## demo on how to make tabs! {.tabset}
-
-#### test tabbing
-including `{.tabset}` next to a heading will make all subheadings (one level presumably) into tabs
-
-#### give me tabs!
-to cancel it just put a higher order heading
-
-### content after tabs
 
 # Sources
 
