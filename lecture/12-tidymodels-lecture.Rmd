@@ -178,6 +178,7 @@ ml_linear_regression(x, formula = NULL, fit_intercept = TRUE, [...], standardiza
 
 - package that aims to unify signatures of different models in `R`
 - one familiar approach to **many different types of models**
+    - [Searchable list](https://www.tidymodels.org/find/parsnip/) of all models available through `parsnip`
 
 ```
   linear_reg() %>% 
