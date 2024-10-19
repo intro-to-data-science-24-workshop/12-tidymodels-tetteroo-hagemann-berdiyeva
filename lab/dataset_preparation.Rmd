@@ -8,30 +8,34 @@ Documentation about the data set can be found [here](https://jse.amstat.org/v19n
 ```{r}
 ames_workshop <- ames |>
   # selection based on what I thought would work reasonably well and is not too hard to make sense of
-  select(MS_Zoning, Lot_Frontage, Lot_Area, Utilities, Neighborhood, Condition_1, Condition_2, Overall_Cond, Exter_Cond, Foundation, Heating, Year_Sold, Garage_Area, Garage_Cars, Mo_Sold, Sale_Price) |>
+  select(MS_Zoning, Lot_Frontage, Lot_Area, Utilities, Neighborhood, Condition_1, Condition_2, Overall_Cond, Exter_Cond, Foundation, Heating, Year_Sold, Garage_Area, Mo_Sold, Sale_Price) |>
   # encode some factors as strings
   mutate(
     Utilities = as.character(Utilities)
   ) -> ames_workshop
+ames_workshop$secret_sauce <- ames_workshop$Lot_Frontage
 # remove some variables to have NA in there, these are numeric, in order to impute them later
-ames_workshop$duplicate_feature <- ames_workshop$Lot_Frontage
 r_na(x = ames_workshop, cols = c(2,3), prob = .1) -> ames_workshop
 ```
 
 ```{r}
 recipe(ames_workshop) %>%
-  update_role(c(MS_Zoning, Lot_Frontage, Lot_Area, Utilities, Neighborhood, Condition_1, Condition_2, Overall_Cond, Exter_Cond, Foundation, Heating, Year_Sold, Garage_Area, Garage_Cars, Mo_Sold, duplicate_feature), new_role = "predictor") %>%
+  update_role(c(MS_Zoning, Lot_Frontage, Lot_Area, Utilities, Neighborhood, Condition_1, Condition_2, Overall_Cond, Exter_Cond, Foundation, Heating, Year_Sold, Garage_Area, Mo_Sold, secret_sauce), new_role = "predictor") %>%
   update_role(Sale_Price, new_role = "outcome") %>%
   step_impute_mean(all_numeric()) %>%
-  step_string2factor(Utilities, levels = c("Floor", "GasA", "GasW", "Grav", "OthW", "Wall")) %>%
+  step_string2factor(Utilities, levels = c("AllPub", "NoSewr", "NoSeWa")) %>%
   step_corr(all_numeric_predictors()) -> rec
+prepepd_recipse <- prep(rec, ames_workshop)
+prepped_data <- bake(prepepd_recipse, ames_workshop)
+
+prepped_data
 ```
 
 
 ```{r}
 model <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(Sale_Price ~ ., data = ames_workshop)
+  fit(Sale_Price ~ ., data = prepped_data)
 ```
 
 ```{r}
