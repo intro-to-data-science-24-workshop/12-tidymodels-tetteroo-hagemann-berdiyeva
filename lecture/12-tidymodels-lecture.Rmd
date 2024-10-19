@@ -50,55 +50,78 @@ knit_hooks$set(
 
 
 # **Rsample** package
-
+.pull-left[
 Useful to split your data into testing and training subsets:
-
-<div align="right">
-<img src="pics/Datasplittingscheme.png" height=300>
-</div>
 
 Why do we care? 
 - Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
 - The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
   - If we run multiple models on the test set, we start to optimise our model to the test set instead of focusing on the model's general ability to explain the dataset. 
+]
+
+.pull-right[
+<div align="center">
+<img src="pics/Datasplittingscheme.png" height=300>
+</div>
+]
 ---
 # **Different ways of splitting your dataset**
-- Initial split (training vs testing)
+
+
+.pull-left[
+- Initial split (training vs testing) --> initial_split(strata = desired column, prop = 0.x)
 - V-fold
 - Bootstraps
 - Rolling forecast
+]
 
+.pull-right[
 <div align="center">
-<img src="lecture/pics/One_Does_Not_Simply_Split.jpg" height=300>
+<img src="pics/One_Does_Not_Simply_Split.png" height=300>
 </div>
-
+]
 ---
 # V-fold
 
 
 
 <div align="center">
-<img src="lecture/pics/V-fold.png" height=300>
+<img src="pics/V-fold.png" height=300>
 </div>
 
 ---
-# Bootstrap
+# Bootstrapping
 
-Useful to split your data into testing and training subsets:
+.pull-left[
+- Analysis sets are sampled from training dataset **with** replacement.
+  - Has the same size as the training dataset
+- Analysis vs Assessment (Out-of-the bag) split
+  - Why does the assessment set differ in size?
+- Function: bootstraps(dataset, times = x).
 
+- (insert picture from practice example to show output of a bootstrap)
+]
+
+
+.pull-right[
 <div align="center">
-<img src="lecture/pics/Bootstrap.png" height=300>
+<img src="pics/Bootstrap.png" height=300>
 </div>
-
+]
 ---
-# Rolling Forecast
+# Rolling Forecasting Origing Resampling
+.pull-left[
+- If our dataset has a temporal component, simply random sampling can disrupt the model in estimating patterns.
+  - Solution: fit_resamples(formula, resamples, ...)
+- We set the size of the analysis and assessment sets. The first sample follows this division, the second iteration takes the same data size but shifts by a specified number. 
+- Alternatively we don't have to shift by one day but also by one week or more. 
+]
 
-Useful to split your data into testing and training subsets:
-
+.pull-right[
 <div align="center">
-<img src="lecture/pics/RollingForecasting.png" height=300>
+<img src="pics/RollingForecasting.png" height=300>
 </div>
-
+]
 ---
 # **yardstick** package
 

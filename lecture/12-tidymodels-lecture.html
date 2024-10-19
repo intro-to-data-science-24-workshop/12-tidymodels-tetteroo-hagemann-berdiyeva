@@ -40,55 +40,78 @@ class: center, middle, inverse, title-slide
 
 
 # **Rsample** package
-
+.pull-left[
 Useful to split your data into testing and training subsets:
-
-&lt;div align="right"&gt;
-&lt;img src="pics/Datasplittingscheme.png" height=300&gt;
-&lt;/div&gt;
 
 Why do we care? 
 - Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
 - The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
   - If we run multiple models on the test set, we start to optimise our model to the test set instead of focusing on the model's general ability to explain the dataset. 
+]
+
+.pull-right[
+&lt;div align="center"&gt;
+&lt;img src="pics/Datasplittingscheme.png" height=300&gt;
+&lt;/div&gt;
+]
 ---
 # **Different ways of splitting your dataset**
-- Initial split (training vs testing)
+
+
+.pull-left[
+- Initial split (training vs testing) --&gt; initial_split(strata = desired column, prop = 0.x)
 - V-fold
 - Bootstraps
 - Rolling forecast
+]
 
+.pull-right[
 &lt;div align="center"&gt;
-&lt;img src="lecture/pics/One_Does_Not_Simply_Split.jpg" height=300&gt;
+&lt;img src="pics/One_Does_Not_Simply_Split.png" height=300&gt;
 &lt;/div&gt;
-
+]
 ---
 # V-fold
 
 
 
-&lt;div align="right"&gt;
-&lt;img src="lecture/pics/V-fold.png" height=300&gt;
+&lt;div align="center"&gt;
+&lt;img src="pics/V-fold.png" height=300&gt;
 &lt;/div&gt;
 
 ---
-# Bootstrap
+# Bootstrapping
 
-Useful to split your data into testing and training subsets:
+.pull-left[
+- Analysis sets are sampled from training dataset **with** replacement.
+  - Has the same size as the training dataset
+- Analysis vs Assessment (Out-of-the bag) split
+  - Why does the assessment set differ in size?
+- Function: bootstraps(dataset, times = x).
 
-&lt;div align="right"&gt;
-&lt;img src="lecture/pics/Bootstrap.png" height=300&gt;
+- (insert picture from practice example to show output of a bootstrap)
+]
+
+
+.pull-right[
+&lt;div align="center"&gt;
+&lt;img src="pics/Bootstrap.png" height=300&gt;
 &lt;/div&gt;
-
+]
 ---
-# Rolling Forecast
+# Rolling Forecasting Origing Resampling
+.pull-left[
+- If our dataset has a temporal component, simply random sampling can disrupt the model in estimating patterns.
+  - Solution: fit_resamples(formula, resamples, ...)
+- We set the size of the analysis and assessment sets. The first sample follows this division, the second iteration takes the same data size but shifts by a specified number. 
+- Alternatively we don't have to shift by one day but also by one week or more. 
+]
 
-Useful to split your data into testing and training subsets:
-
-&lt;div align="right"&gt;
-&lt;img src="lecture/pics/RollingForecasting.png" height=300&gt;
+.pull-right[
+&lt;div align="center"&gt;
+&lt;img src="pics/RollingForecasting.png" height=300&gt;
 &lt;/div&gt;
-
+]
 ---
 # **yardstick** package
 
