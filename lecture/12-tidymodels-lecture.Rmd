@@ -123,6 +123,99 @@ Why do we care?
 </div>
 ]
 ---
+# Preprocessing and Feature Engineering
+
+- Data needs to adhere to some model-specific rules and assumptions
+
+> __Feature Engineering__
+> The process of transforming raw data into features well suited-for modelling.
+
+- What does this entail?
+    - removing NA's -> how to deal with them? Throw data away? Impute with mean/median/...?
+    - Transform numeric values (`log`, `sqrt`,...)
+    - Rescale numeric values
+    - deal with nominal/string values
+    
+---
+# Pre-processing with recipes
+
+- While all of this can be coded by hand, `recipes` make our life's easier by providing the necessary operations in a standardized way
+- familiar to `tidyverse` users and compatible with `dplyr` 
+```r
+rec <- recipe(predictor ~ ., data = training_data) %>%
+      step_corr(all_predictors()) %>% # remove features with high correlation between them
+      step_string2factor(all_string_predictors()) %>%
+      step_impute_mean(all_numeric_predictors()) %>%
+      step_mutate(<dplyr call>)
+```
+--
+- can be reused easily, as we can rely on roles and not specific variable names
+--
+<br>
+- Use
+    - `prep()` to calculate pre-processing parameters (e.g., mean to impute)
+    - `bake()` to apply the pre-processing steps to the actual data
+---
+# Modelling in R
+
+- Many different models to choose from
+    - Type of model to use is an important decision, which needs to grounded __in theory__
+- For each type of model, multiple implementations are available
+- Consider these examples for linear regression models:
+---
+# Modelling in R
+
+- `stat::lm()`
+```r
+lm(formula, data, [...], ...)
+```
+--
+
+- `glmnet::glm()`
+```r
+glmnet(x, y, [...], standardize = TRUE, intercept = TRUE, ...)
+```
+--
+
+- `sparklyr::ml_linear_regression()`
+```r
+ml_linear_regression(x, formula = NULL, fit_intercept = TRUE, [...], standardization = TRUE, [...], ...)
+```
+---
+# Modelling in R
+.pull-left[
+- Syntax differs
+    - in argument order
+    - in argument names
+    - (in output formatting/reporting -> __later__)
+    
+<img src="pics/so_many_syntaxes.jpg" height=300>
+]
+--
+.pull-right[
+- Parsnip to the rescue!
+
+<img src="pics/parsnip_logo.png" height=300>
+]
+---
+# parsnip
+
+- package that aims to unify signatures of different models in `R`
+- one familiar approach to **many different types of models**
+
+```
+  linear_reg() %>% 
+  set_engine("lm") %>% 
+  fit(dependent ~ pred_one + pred_two, data = data)
+```
+--
+<br>
+- `linear_reg()`, `decision_tree()`, `logistic_reg()`, ...
+- `set_engine` to specify which implementation to use
+- unified way of fitting a model to a dataset: `fit()`
+- unified way of predicting the outcome on a dataset: `predict(fitted_model, data)`
+
+---
 # **yardstick** package
 
 Contains tools for computing statistical performance metrics
