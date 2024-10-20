@@ -114,7 +114,7 @@ The following table gives you a quick overview of the available features (in the
 Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task! 
 
 # Splitting the Data-Set
-
+We are going to use the package Rsample: in what ways can we split our dataset, what kind of output can we expect and some next steps. 
 
 # Example.
     
@@ -123,14 +123,49 @@ Our goal in this session is to predict the `Sale_Price` of a house based on the 
 
 2. Sampling & bootstrapping
 
+## Initial Split
+We first split the entire dataset into the training and testing dataset (see slide x). For a split of 75-25% we use .75 as argument.
 
+```{r eval = FALSE}
+ames_split <- rsample::initial_split(ames_workshop, prop = .75)
+ames_split
+
+```
+We can see it partitioned the datset into training (2197 observations) and testing (733 observations). It also gives us the total amount, namely 2930.
+
+## Training and testing
+We need one more step to have our training and testing dataset:  
+
+```{r}
+ames_train <- rsample::training(ames_split)
+ames_test <- rsample::testing(ames_split)
+```
+
+Now we're ready to do some advanced splitting of our training dataset!
+
+
+## Cross validation and V-Fold
+This example will focus on v-fold cross validation to further split our training set. Basically, we tell R to split our dataset x amount of times in two groups with a set size (without replacement).
+
+```{r}
+ames_folds <- rsample::vfold_cv(ames_train, v = 5)
+ames_folds
+
+## to inspect the first fold we do the following:
+#to see the amount of analysis vs assessment observations of the first fold:
+ames_folds$splits[[1]] %>% analysis() %>% dim()
+#to look into the analysis set of the first split:
+ames_folds$splits[[1]] %>% analysis() 
+
+```
+
+As you can see, we have not split the training set into 5 sets that consist of an analysis and assessment set. The analysis sets are used to run one or multiple models on, the assessment set acts as a test set to see how well the models explain new data. During research, we can use these various analysis and assessment sets to compare different models and see which one we want to run on our test set. Since we can only run one model on the test set, we need to be confident in the performance of our final model.
+
+!!!Important that the models are run on the analysis sets of the ames_folds tibble :) 
 3. Model creation
 
 
-4. Evaluation
-
-
-
+4. Evaluation (run model on test set (ames_test) and use that for performance estimate :)
 ```{r eval = FALSE}
 # parsnip model ALWAYS returns the results as a data frame 
 predictions <- bind_cols(
@@ -161,11 +196,58 @@ reg_metric(predictions, truth = mpg, estimate = .pred)
 
 2. Sampling & bootstrapping
 
+2.1 Split the transformed dataset into a training and testing set. Use a proportion of .8. Extract the training and testing dataset from the initial split set. 
+```{r eval = FALSE}
+#write your code here
+
+#answer: 
+ames_split_ex <- rsample::initial_split(ames_workshop, prop = .8)
+ames_split_ex
+
+ames_train_ex <- rsample::training(ames_split_ex)
+ames_test_ex <- rsample::testing(ames_split_ex)
+
+```
+
+2.2 Bootstrapping:
+Bootstrapping is the second method we can employ to split our training set. This time we sample from the training set with replacement until we get the same amount of the training set. The unsampled observations are then put in the assessment (out of the bag) set. For more info, see slide x. 
+
+Use the rsample::bootstraps function to split the dataset 3 times. Note: where vfold_cv uses v = x, bootstraps employs times = x. Extract the analysis sets.
+```{r eval = FALSE}
+ames_bootstrap_ex <- rsample::bootstraps(ames_train_ex, times = 3)
+ames_bootstrap_ex
+#this gives us a tibble with two columns: column 1 contains lists: each list then contains an analysis and assessment set. The second column gives us the bootstrap ID, this become more important when working with a large number of bootstrap samples.
+
+#Inspect the first bootstrap sample. How many observations do you expect in the analysis set? 
+ames_bootstrap_analysis <- ames_bootstrap_ex$splits[[1]] %>% analysis()
+ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
+
+```
+
+Note: It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here.  
 
 3. Model creation
 
+```{r eval = FALSE}
+#For Linus: 
+#Just to show what kind of code I used to map over the splits lists to get the model output in the penguin example:
 
-4. Evaluation
+#so basically by putting in analysis(split) in the model, it's telling R to take the analysis set from the bootstrap sample and using model on it.
+fit_lm_penguin_bootstrap <- function(split) {
+    lm(body_mass_g ~ flipper_length_mm + sex, analysis(split), start = list(k = 1, b = 0))
+}
+
+#Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.
+boot_penguin_models <-
+  penguin_bootstrap %>% 
+  mutate(model = map(splits, fit_lm_penguin_bootstrap),
+         coef_info = map(model, tidy))
+
+
+```
+
+
+4. Evaluation (make sure to run models on test set first and then use performance metrics :) 
 
 ```{r eval = FALSE}
 # TO BE CORRECTED!!!
