@@ -47,8 +47,43 @@ knit_hooks$set(
 })
 ```
 
+#Welcome to our workshop on tidymodels!
+Table of contents
+
+1. [Tidymodels: A brief overview](#Tidymodels: A brief overview)<sup>1</sup>
+
+2. [Recipe](#Recipe)
+
+3. [Parsnip](#Parsnip)
+
+4. [Rsample](#Rsample)
+
+5. [Yardstick](#Yardstick)
+
+6. [Example and Exercise](#ex and ex)
+
+7. [For further investigation](#other)
+
+---
+name: Tidymodels: A brief overview
+- Tidymodels encompasses a large range of packages, each targeted at a specific part of the modelling process. Graphically: 
 
 
+---
+#The different packages:
+Goal of each package:
+1. rsamples - to split the data into training and testing, analysis and assessment sets 
+2. recipes - to prepare the data with preprocessing 
+3. parsnip - to specify and fit the data to a model
+4. yardstick and tune - to evaluate model performance
+5. workflows - to combine recipe and parsnip objects into a workflow 
+6. tune and dials - to optomise models  
+7. broom - to increase the readability of model output
+
+For other great overviews of how the packages complement eachother and fit within the whole modelling process, click [here]{https://rpubs.com/chenx/tidymodels_tutorial}
+
+---
+name: Rsample
 # **Rsample** package
 .pull-left[
 Useful to split your data into testing and training subsets:
@@ -69,8 +104,8 @@ Why do we care?
 
 
 .pull-left[
-- Initial split (training vs testing) --> initial_split(strata = desired column, prop = 0.x)
-- V-fold
+- Initial split (training vs testing) --> initial_split(dataset, prop = 0.x, strata = desired column)
+- Cross validation and V-fold
 - Bootstraps
 - Rolling forecast
 ]
@@ -81,14 +116,24 @@ Why do we care?
 </div>
 ]
 ---
-# V-fold
+# Cross validation and V-fold
 
 
+.pull-left[
+- The data is split into v-sets of data called folds of equal size.  
+- Function: vfold_cv(dataset, v = x)
+  - E.g. x = 3, the data is split in three different ways with 2/3 in analysis en 1/3 is assessment.
+  - The default is set to 10, this is still manageable but enough to produce robust results. 
+- Output is a tibble containing lists, each list contains information on how the data is split.
+  - We can unpack the first column to get our analysis and assessment set. 
+- For more information and variants of cross validation check out: [Tidy Modelling with R Ch 10](https://www.tmwr.org/resampling).
+]
 
+.pull-right[
 <div align="center">
 <img src="pics/V-fold.png" height=300>
 </div>
-
+]
 ---
 # Bootstrapping
 
@@ -98,9 +143,6 @@ Why do we care?
 - Analysis vs Assessment (Out-of-the bag) split
   - Why does the assessment set differ in size?
 - Function: bootstraps(dataset, times = x).
-
-- (insert picture from practice example to show output of a bootstrap)
-]
 
 
 .pull-right[
@@ -123,6 +165,7 @@ Why do we care?
 </div>
 ]
 ---
+name: Yardstick
 # **yardstick** package
 
 Contains tools for computing statistical performance metrics
@@ -180,6 +223,13 @@ Measuring the accuracy in prediction of continuous numeric values
 | smape()               | Symmetric Mean Absolute Percentage Error | 0 < x < 1, the lower the better |
 
 ---
+class: inverse, center, middle
+name: ex and ex
+
+# Example and Exercise
+<html><div style='float:left'></div><hr color='#EB811B' size=1px style="width:1000px; margin:auto;"/></html>
+---
+Name: Sources and Other resources
 # For further investigation
 
 Our links here
