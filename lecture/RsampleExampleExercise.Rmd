@@ -141,7 +141,7 @@ https://www.stepbystepdatascience.com/ml-with-tidymodels
 https://www.tmwr.org/resampling 
 
 ## Exercise is bootstrapping version but with interpretation questions:
-- - Question : For the initial split, choose three variables and plot their distribution. Do we need to stratify based on a variable, if so why? 
+- Question : For the initial split, choose three variables and plot their distribution. Do we need to stratify based on a variable, if so why? 
 - Question : Split the training dataset into 10 groups using bootstraps. How many observations do you expect in the analysis set? Please state your reasoning. 
 - Question 3: Create a model using variables xyz and use purrr:map to run it on all bootstrap sets.
 - Question 4: Use other tools from the rsample/tidymodels package to compare the model fits. Hint: use augment/tidy and/or ggplot. What can you say about the fit of your various models?
