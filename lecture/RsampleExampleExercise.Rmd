@@ -1,0 +1,156 @@
+---
+title: "RsampleExampleExercise"
+author: "FMTetteroo"
+date: "2024-10-19"
+output: html_document
+---
+install necessary packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rsample)
+```
+
+## RSample
+
+We are going to learn about the package Rsample: in what ways can we split our dataset, what kind of output can we expect and some next steps. As an example, we use the penguins dataset which is relatively contained so we don't overload our computers when splitting and modeling the dataset.
+
+```{r}
+#install and inspect the dataset
+install.packages("palmerpenguins")
+library(palmerpenguins)
+palmerpenguins::penguins
+summary(penguins)
+```
+
+## Initial Split
+We first split the entire dataset into the training and testing dataset (see slide x). For a split of 75-25% we use .75 as argument. 
+
+```{r}
+penguins_split <- rsample::initial_split(penguins, prop = .75)
+penguins_split
+
+```
+
+We can see it partitioned the datset into training (258 observations) and testing (86 observations). It also gives us the total amount, namely 344.
+
+## Training and testing
+We need one more step to have our training and testing dataset:  
+
+```{r}
+penguins_train <- rsample::training(penguins_split)
+penguins_test <- rsample::testing(penguins_split)
+```
+
+Now we're reading to do some advanced splitting of our training dataset!
+
+## Tangent: Stratification
+What if a variable in your dataset is skewed and you're worried that this does not translate well with using initial_split. For example, in a dataset with bags and their prices, the distribution is right skewed and there are more low-priced bags compared to a limited number of expensive birkin bags. A simple split of the data may cause underrepresentation of highly priced bags. Don't panic! We can use the strata argument to stratify based on one variable. 
+
+In the case of penguins, we don't have prices but we see that the body_mass in grams is left skewed. We want to make sure that penguins of all weight are well represented in our split samples, so we use strate = body_mass_g to ensure this. 
+
+
+```{r}
+hist(penguins$body_mass_g)
+
+penguins_split_s <- rsample::initial_split(penguins, prop = .75, strata = body_mass_g)
+penguins_train_s <- rsample::training(penguins_split_s)
+penguins_test_s <- rsample::testing(penguins_split_s)
+
+```
+
+## Analysis and assessment sets
+Now it's time for the fun part! We are going to split our dataset in analysis and assessment sets. Check out slide x of our presentation why this is a great way for robust modelling.  
+
+## Cross validation and V-Fold
+First, we will split our training dataset using v-fold cross validation. Basically, we tell R to split our datset x amount of times in two groups with a set size (without replacement).
+
+```{r}
+
+penguin_folds <- rsample::vfold_cv(penguins_train, v = 5)
+penguin_folds
+
+## to inspect the first fold we do the following:
+#to see the amount of analysis vs assessment observations of the first fold:
+penguin_folds$splits[[1]] %>% analysis() %>% dim()
+#to look into the analysis set of the first split:
+penguin_folds$splits[[1]] %>% analysis() 
+
+```
+
+## Bootstrapping
+Bootstrapping is the second method we can employ to split our training set. This time we sample from the training set with replacement until we get the same amount of the training set. The unsampled observations are then put in the assessment (out of the bag) set. For more info, see slide x. 
+
+```{r}
+
+penguin_bootstrap <- rsample::bootstraps(penguins_train, times = 5)
+penguin_bootstrap
+
+#To inspect the first bootstrap analysis set, we can see that the length is 258 rows (just as long as our penguins_train set!).
+penguin_bootstrap$splits[[1]] %>% analysis()
+
+```
+
+## Running models with bootstraps
+We've split our data up successfully, great! But now we want to use a model on eacht bootstrap sample to see how it performs on the different splits. Like we have seen in previous assignments, this is a task for purrr:map. Let's see how we can apply the map-function to our bootstraps. 
+
+Note: Alternatively you could run different models with different modelling decisions on the various sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here. 
+
+```{r}
+#first we need to write a model to use on the dataset. What if we wanted to explore the relationship between penguin's flipper length and body mass.
+
+fit_lm_penguin_bootstrap <- function(split) {
+    lm(body_mass_g ~ flipper_length_mm + sex, analysis(split), start = list(k = 1, b = 0))
+}
+
+hist(penguins$flipper_length_mm)
+
+boot_penguin_models <-
+  penguin_bootstrap %>% 
+  mutate(model = map(splits, fit_lm_penguin_bootstrap),
+         coef_info = map(model, tidy))
+
+boot_coefs <- 
+  boot_penguin_models %>% 
+  unnest(coef_info)
+boot_coefs
+
+#The amazing thing about  rsample? You can also calculate the confidence intervals!
+penguin_percentile_intervals <- int_pctl(boot_penguin_models, coef_info)
+penguin_percentile_intervals
+
+#Finally, augment shows us how well each model fit for each of the observation in the bootstraps: 
+boot_penguin_aug <- 
+  boot_penguin_models %>% 
+  mutate(augmented = map(model, augment)) %>% 
+  unnest(augmented)
+boot_penguin_aug
+
+#Graph to visually compare the 5 model fits
+ggplot(boot_penguin_aug, aes(flipper_length_mm, body_mass_g)) +
+  geom_line(aes(y = .fitted, group = id), alpha = .2, col = "blue") +
+  geom_point()
+
+```
+
+If you're interested in an in-depth example of tidying v-fold sets, please consult: https://www.stepbystepdatascience.com/ml-with-tidymodels. 
+
+Sources: 
+https://www.tidymodels.org/learn/statistics/bootstrap/ 
+https://rsample.tidymodels.org/index.html
+https://www.stepbystepdatascience.com/ml-with-tidymodels
+https://www.tmwr.org/resampling 
+
+## Exercise is bootstrapping version but with interpretation questions:
+- Question : For the initial split, choose three variables and plot their distribution. Do we need to stratify based on a variable, if so why? 
+- Question : Split the training dataset into 10 groups using bootstraps. How many observations do you expect in the analysis set? Please state your reasoning. 
+- Question 3: Create a model using variables xyz and use purrr:map to run it on all bootstrap sets.
+- Question 4: Use other tools from the rsample/tidymodels package to compare the model fits. Hint: use augment/tidy and/or ggplot. What can you say about the fit of your various models?
+
+
+
+- still considering if vfold more examples on how to split dataset.
+- add summarize training and testing to see if sets similar!
+
+picture flowchart credits; https://rpubs.com/chenx/tidymodels_tutorial
+
+
