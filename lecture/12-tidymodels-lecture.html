@@ -56,8 +56,8 @@ Why do we care?
 
 
 .pull-left[
-- Initial split (training vs testing) --&gt; initial_split(strata = desired column, prop = 0.x)
-- V-fold
+- Initial split (training vs testing) --&gt; initial_split(dataset, prop = 0.x, strata = desired column)
+- Cross validation and V-fold
 - Bootstraps
 - Rolling forecast
 ]
@@ -68,14 +68,24 @@ Why do we care?
 &lt;/div&gt;
 ]
 ---
-# V-fold
+# Cross validation and V-fold
 
 
+.pull-left[
+- The data is split into v-sets of data called folds of equal size.  
+- Function: vfold_cv(dataset, v = x)
+  - E.g. x = 3, the data is split in three different ways with 2/3 in analysis en 1/3 is assessment.
+  - The default is set to 10, this is still manageable but enough to produce robust results. 
+- Output is a tibble containing lists, each list contains information on how the data is split.
+  - We can unpack the first column to get our analysis and assessment set. 
+- For more information and variants of cross validation check out: [Tidy Modelling with R Ch 10](https://www.tmwr.org/resampling).
+]
 
+.pull-right[
 &lt;div align="center"&gt;
 &lt;img src="pics/V-fold.png" height=300&gt;
 &lt;/div&gt;
-
+]
 ---
 # Bootstrapping
 
@@ -85,9 +95,6 @@ Why do we care?
 - Analysis vs Assessment (Out-of-the bag) split
   - Why does the assessment set differ in size?
 - Function: bootstraps(dataset, times = x).
-
-- (insert picture from practice example to show output of a bootstrap)
-]
 
 
 .pull-right[
