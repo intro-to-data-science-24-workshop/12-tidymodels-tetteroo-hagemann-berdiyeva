@@ -4,7 +4,6 @@
     <title>Introduction to Data Science - Workshop 2024</title>
     <meta charset="utf-8" />
     <meta name="author" content="Franka Tetteroo, Linus Hagemann &amp; Sofiya Berdiyeva" />
-    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
@@ -35,6 +34,43 @@ class: center, middle, inverse, title-slide
 }
 &lt;/style&gt;
 
+#Welcome to our workshop on tidymodels!
+Table of contents
+
+1. [Tidymodels: A brief overview](#Tidymodels: A brief overview)&lt;sup&gt;1&lt;/sup&gt;
+
+2. [Recipe](#Recipe)
+
+3. [Parsnip](#Parsnip)
+
+4. [Rsample](#Rsample)
+
+5. [Yardstick](#Yardstick)
+
+6. [Example and Exercise](#ex and ex)
+
+7. [For further investigation](#other)
+
+---
+name: Tidymodels: A brief overview
+- Tidymodels encompasses a large range of packages, each targeted at a specific part of the modelling process. Graphically: 
+
+
+---
+#The different packages:
+Goal of each package:
+1. rsamples - to split the data into training and testing, analysis and assessment sets 
+2. recipes - to prepare the data with preprocessing 
+3. parsnip - to specify and fit the data to a model
+4. yardstick and tune - to evaluate model performance
+5. workflows - to combine recipe and parsnip objects into a workflow 
+6. tune and dials - to optomise models  
+7. broom - to increase the readability of model output
+
+For other great overviews of how the packages complement eachother and fit within the whole modelling process, click [here]{https://rpubs.com/chenx/tidymodels_tutorial}
+
+---
+name: Rsample
 
 # **Rsample** package
 .pull-left[
@@ -211,6 +247,8 @@ ml_linear_regression(x, formula = NULL, fit_intercept = TRUE, [...], standardiza
 - unified way of predicting the outcome on a dataset: `predict(fitted_model, data)`
 
 ---
+name: Yardstick
+
 # **yardstick** package
 
 Contains tools for computing statistical performance metrics
@@ -268,6 +306,14 @@ Measuring the accuracy in prediction of continuous numeric values
 | smape()               | Symmetric Mean Absolute Percentage Error | 0 &lt; x &lt; 1, the lower the better |
 
 ---
+class: inverse, center, middle
+name: ex and ex
+
+# Example and Exercise
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px style="width:1000px; margin:auto;"/&gt;&lt;/html&gt;
+---
+Name: Sources and Other resources
+
 # Further Ressources
 
 - 🌐 Website of the [`tidymodels`](https://www.tidymodels.org/) package, including documentation and guides
