@@ -1522,7 +1522,16 @@ margin-left: 0 !important;
           <li><a href="#fitting-a-model" id="toc-fitting-a-model">Fitting a Model</a></li>
           <li><a href="#model-evaluation" id="toc-model-evaluation">Model evaluation</a></li>
           </ul></li>
-          <li><a href="#exercise" id="toc-exercise">Exercise</a></li>
+          <li><a href="#exercise" id="toc-exercise">Exercise</a>
+          <ul>
+          <li><a href="#loading-and-tranforming-the-data-with-recipe" id="toc-loading-and-tranforming-the-data-with-recipe">Loading
+          and Tranforming the Data with <code>recipe</code></a></li>
+          <li><a href="#sampling-bootstrapping-1" id="toc-sampling-bootstrapping-1">Sampling &amp;
+          Bootstrapping</a></li>
+          <li><a href="#fitting-the-model" id="toc-fitting-the-model">Fitting the Model</a></li>
+          <li><a href="#evaluating-the-performance-of-your-model" id="toc-evaluating-the-performance-of-your-model">Evaluating
+          the Performance of your Model</a></li>
+          </ul></li>
           <li><a href="#sources" id="toc-sources">Sources</a></li>
           </ul>
         </nav>
@@ -1577,6 +1586,8 @@ color: #fff;
 background-color: #2f1a61;
 }
 div.danger {background-color:#c42d2d; color:white; border-radius: 5px; padding: 20px;}
+div.further {background-color:#7CB9E8; color:white; border-radius: 5px; padding: 20px;}
+div.info {background-color:#66FF99; color:black; border-radius: 5px; padding: 20px;}
 </style>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -1629,12 +1640,12 @@ in the data-set and introduce some need for pre-processing.</p>
 ##  1 Residential_Low_Den…          141    31770 AllPub    North_Ames   Norm       
 ##  2 Residential_High_De…           80    11622 AllPub    North_Ames   Feedr      
 ##  3 Residential_Low_Den…           81    14267 AllPub    North_Ames   Norm       
-##  4 Residential_Low_Den…           NA    11160 AllPub    North_Ames   Norm       
+##  4 Residential_Low_Den…           93    11160 AllPub    North_Ames   Norm       
 ##  5 Residential_Low_Den…           74    13830 AllPub    Gilbert      Norm       
-##  6 Residential_Low_Den…           78     9978 AllPub    Gilbert      Norm       
+##  6 Residential_Low_Den…           NA     9978 AllPub    Gilbert      Norm       
 ##  7 Residential_Low_Den…           41     4920 AllPub    Stone_Brook  Norm       
 ##  8 Residential_Low_Den…           43     5005 AllPub    Stone_Brook  Norm       
-##  9 Residential_Low_Den…           39       NA AllPub    Stone_Brook  Norm       
+##  9 Residential_Low_Den…           39     5389 AllPub    Stone_Brook  Norm       
 ## 10 Residential_Low_Den…           60     7500 AllPub    Gilbert      Norm       
 ## # ℹ 2,920 more rows
 ## # ℹ 10 more variables: Condition_2 &lt;fct&gt;, Overall_Cond &lt;fct&gt;, Exter_Cond &lt;fct&gt;,
@@ -1746,9 +1757,9 @@ solid.</strong></p>
 ## 1 Resident…          141    31770 AllPub    North_Ames   Norm        Norm       
 ## 2 Resident…           80    11622 AllPub    North_Ames   Feedr       Norm       
 ## 3 Resident…           81    14267 AllPub    North_Ames   Norm        Norm       
-## 4 Resident…           NA    11160 AllPub    North_Ames   Norm        Norm       
+## 4 Resident…           93    11160 AllPub    North_Ames   Norm        Norm       
 ## 5 Resident…           74    13830 AllPub    Gilbert      Norm        Norm       
-## 6 Resident…           78     9978 AllPub    Gilbert      Norm        Norm       
+## 6 Resident…           NA     9978 AllPub    Gilbert      Norm        Norm       
 ## # ℹ 9 more variables: Overall_Cond &lt;fct&gt;, Exter_Cond &lt;fct&gt;, Foundation &lt;fct&gt;,
 ## #   Heating &lt;fct&gt;, Year_Sold &lt;int&gt;, Garage_Area &lt;dbl&gt;, Mo_Sold &lt;int&gt;,
 ## #   Sale_Price &lt;int&gt;, secret_sauce &lt;dbl&gt;</code></pre>
@@ -1824,9 +1835,9 @@ this here for the sake of clearnes.</p>
 ## 1 Resident…        141      31770 AllPub    North_Ames   Norm        Norm       
 ## 2 Resident…         80      11622 AllPub    North_Ames   Feedr       Norm       
 ## 3 Resident…         81      14267 AllPub    North_Ames   Norm        Norm       
-## 4 Resident…         57.7    11160 AllPub    North_Ames   Norm        Norm       
+## 4 Resident…         93      11160 AllPub    North_Ames   Norm        Norm       
 ## 5 Resident…         74      13830 AllPub    Gilbert      Norm        Norm       
-## 6 Resident…         78       9978 AllPub    Gilbert      Norm        Norm       
+## 6 Resident…         57.4     9978 AllPub    Gilbert      Norm        Norm       
 ## # ℹ 9 more variables: Overall_Cond &lt;fct&gt;, Exter_Cond &lt;fct&gt;, Foundation &lt;fct&gt;,
 ## #   Heating &lt;fct&gt;, Year_Sold &lt;int&gt;, Garage_Area &lt;dbl&gt;, Mo_Sold &lt;int&gt;,
 ## #   Sale_Price &lt;int&gt;, secret_sauce &lt;dbl&gt;</code></pre>
@@ -1884,16 +1895,16 @@ times in two groups with a set size (without replacement).</p>
 <pre><code>## # A tibble: 1,757 × 16
 ##    MS_Zoning            Lot_Frontage Lot_Area Utilities Neighborhood Condition_1
 ##    &lt;fct&gt;                       &lt;dbl&gt;    &lt;int&gt; &lt;fct&gt;     &lt;fct&gt;        &lt;fct&gt;      
-##  1 Residential_Low_Den…         48       6240 AllPub    Northridge_… Norm       
-##  2 Residential_Low_Den…         63       4000 AllPub    Crawford     Norm       
-##  3 Residential_Low_Den…         70      12886 AllPub    Sawyer       Norm       
-##  4 Residential_Medium_…         57.7     6000 AllPub    Brookside    Norm       
-##  5 Residential_Low_Den…         57.7     2938 AllPub    Bloomington… Norm       
-##  6 Residential_Low_Den…         64       7040 AllPub    Sawyer_West  Feedr      
-##  7 Residential_Low_Den…         60       7200 AllPub    North_Ames   Norm       
-##  8 Residential_Low_Den…         85      11924 AllPub    Northridge_… Norm       
-##  9 Residential_Medium_…         50       6000 AllPub    Old_Town     Norm       
-## 10 Residential_Low_Den…         38      14963 AllPub    Veenker      Norm       
+##  1 Residential_Low_Den…           68    10203 AllPub    College_Cre… Norm       
+##  2 Residential_Low_Den…           68    10110 AllPub    Sawyer_West  Norm       
+##  3 Floating_Village_Re…           65     8125 AllPub    Somerset     Norm       
+##  4 Residential_Medium_…           60     6324 AllPub    Brookside    Feedr      
+##  5 Residential_Medium_…           55     8800 AllPub    Old_Town     Norm       
+##  6 Residential_Low_Den…           39     5070 AllPub    Stone_Brook  Norm       
+##  7 Residential_Low_Den…           75    11380 AllPub    North_Ames   Norm       
+##  8 Floating_Village_Re…           24     2544 AllPub    Somerset     Norm       
+##  9 Residential_Low_Den…            0     9650 AllPub    Crawford     Norm       
+## 10 Residential_Low_Den…           80     8480 AllPub    North_Ames   Norm       
 ## # ℹ 1,747 more rows
 ## # ℹ 10 more variables: Condition_2 &lt;fct&gt;, Overall_Cond &lt;fct&gt;, Exter_Cond &lt;fct&gt;,
 ## #   Foundation &lt;fct&gt;, Heating &lt;fct&gt;, Year_Sold &lt;int&gt;, Garage_Area &lt;dbl&gt;,
@@ -1948,107 +1959,191 @@ model!</strong>.</p>
 </div>
 <div id="model-evaluation" class="section level2">
 <h2>Model evaluation</h2>
-<ol start="4" style="list-style-type: decimal">
-<li>Evaluation (run model on test set (ames_test) and use that for
-performance estimate :)</li>
-</ol>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># parsnip model ALWAYS returns the results as a data frame </span></span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="fu">select</span>(auto_test, mpg),</span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="fu">predict</span>(model, auto_test)</span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>)</span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co"># And here comes yardstick</span></span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co"># When &quot;truth&quot; is a factor: accuracy and the Kappa</span></span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co"># When &quot;truth&quot; is numeric: rmse, rsq and mae.</span></span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a></span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co"># Estimate one or more common performance estimates depending on the class of truth </span></span>
-<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="fu">metrics</span>(predictions, <span class="at">truth =</span> older, <span class="at">estimate =</span> .pred)</span>
-<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a></span>
-<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co"># Regression metrics</span></span>
-<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>reg_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(huber_loss, iic, mape, mase)</span>
-<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co"># The returned function has the same arguments as metrics()</span></span>
-<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="fu">reg_metric</span>(predictions, <span class="at">truth =</span> mpg, <span class="at">estimate =</span> .pred)</span></code></pre></div>
+<p>Now, let’s see how well our models performs:</p>
+<div class="danger">
+<p>⚠ To evaluate model performance, always use the <strong>test</strong>
+set of the data-split!</p>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># parsnip model ALWAYS returns the results as a data frame</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>test_set <span class="ot">&lt;-</span> ames_folds<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">assessment</span>()</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="fu">select</span>(test_set, Sale_Price),</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>  <span class="fu">predict</span>(model, test_set)</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co"># And here comes yardstick</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co"># When &quot;truth&quot; is a factor: accuracy and the Kappa</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co"># When &quot;truth&quot; is numeric: rmse, rsq and mae.</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co"># Estimate one or more common performance estimates depending on the class of truth </span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="fu">metrics</span>(predictions, <span class="at">truth =</span> Sale_Price, <span class="at">estimate =</span> .pred)</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co"># Regression metrics</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>reg_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(huber_loss, iic, mape, mase)</span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co"># The returned function has the same arguments as metrics()</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="fu">reg_metrics</span>(predictions, <span class="at">truth =</span> Sale_Price, <span class="at">estimate =</span> .pred)</span></code></pre></div>
+<hr />
 </div>
 </div>
 <div id="exercise" class="section level1">
 <h1>Exercise</h1>
-<ol style="list-style-type: decimal">
-<li><p>Loading and transforming the data with recipe</p></li>
-<li><p>Sampling &amp; bootstrapping</p></li>
-</ol>
-<p>2.1 Split the transformed dataset into a training and testing set.
-Use a proportion of .8. Extract the training and testing dataset from
-the initial split set.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co">#write your code here</span></span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co">#answer: </span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>ames_split_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(ames_workshop, <span class="at">prop =</span> .<span class="dv">8</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>ames_split_ex</span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>ames_train_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">training</span>(ames_split_ex)</span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>ames_test_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">testing</span>(ames_split_ex)</span></code></pre></div>
-<p>2.2 Bootstrapping: Bootstrapping is the second method we can employ
-to split our training set. This time we sample from the training set
-with replacement until we get the same amount of the training set. The
-unsampled observations are then put in the assessment (out of the bag)
-set. For more info, see slide x.</p>
-<p>Use the rsample::bootstraps function to split the dataset 3 times.
-Note: where vfold_cv uses v = x, bootstraps employs times = x. Extract
-the analysis sets.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>ames_bootstrap_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">bootstraps</span>(ames_train_ex, <span class="at">times =</span> <span class="dv">3</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>ames_bootstrap_ex</span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#this gives us a tibble with two columns: column 1 contains lists: each list then contains an analysis and assessment set. The second column gives us the bootstrap ID, this become more important when working with a large number of bootstrap samples.</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#Inspect the first bootstrap sample. How many observations do you expect in the analysis set? </span></span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>ames_bootstrap_analysis <span class="ot">&lt;-</span> ames_bootstrap_ex<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">analysis</span>()</span>
-<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>ames_bootstrap_assessment <span class="ot">&lt;-</span> ames_bootstrap_ex<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">assessment</span>()</span></code></pre></div>
-<p>Note: It is possible to run different models with different modelling
-decisions on the various analysis sets to see how well different models
-can explain the data, but for simplicity’s sake, we’re keeping it to one
-model here.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Model creation</li>
-</ol>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co">#For Linus: </span></span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#Just to show what kind of code I used to map over the splits lists to get the model output in the penguin example:</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#so basically by putting in analysis(split) in the model, it&#39;s telling R to take the analysis set from the bootstrap sample and using model on it.</span></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>fit_lm_penguin_bootstrap <span class="ot">&lt;-</span> <span class="cf">function</span>(split) {</span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>    <span class="fu">lm</span>(body_mass_g <span class="sc">~</span> flipper_length_mm <span class="sc">+</span> sex, <span class="fu">analysis</span>(split), <span class="at">start =</span> <span class="fu">list</span>(<span class="at">k =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">0</span>))</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>}</span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.</span></span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>boot_penguin_models <span class="ot">&lt;-</span></span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  penguin_bootstrap <span class="sc">%&gt;%</span> </span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(splits, fit_lm_penguin_bootstrap),</span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>         <span class="at">coef_info =</span> <span class="fu">map</span>(model, tidy))</span></code></pre></div>
-<ol start="4" style="list-style-type: decimal">
-<li>Evaluation (make sure to run models on test set first and then use
-performance metrics :)</li>
-</ol>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># TO BE CORRECTED!!!</span></span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>predictions_lm <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a> <span class="fu">select</span>(auto_test, mpg),</span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a> <span class="fu">predict</span>(linreg_reg_model, auto_test)</span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>)</span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co"># One or more common performance estimates</span></span>
-<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co"># metrics(data= YOUR CODE, truth = YOUR CODE, estimate = YOUR CODE)</span></span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a></span>
-<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co"># Calculate symmetric mean absolute percentage error</span></span>
-<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="co"># Who has the lowest value?</span></span>
-<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a><span class="co"># Answer: smape(predictions_lm, truth = mpg, estimate = .pred)</span></span>
-<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a></span>
-<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a><span class="co"># OR</span></span>
-<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a></span>
-<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a><span class="co"># Calculate the coefficient of determination (the traditional one)</span></span>
-<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a><span class="co"># Who has the highest value?</span></span>
-<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a></span>
-<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a><span class="co"># Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)</span></span></code></pre></div>
+<div class="info">
+<p>Remember - the goal of this exercise is to build a well-performing
+model predicting the <code>Sale_Price</code> of a house.</p>
+</div>
+<div id="loading-and-tranforming-the-data-with-recipe" class="section level2">
+<h2>Loading and Tranforming the Data with <code>recipe</code></h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Let&#39;s start from a clean slate and load the data-set anew!</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;ames_workshop.RData&quot;</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(ames_workshop) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="fu">update_role</span>(<span class="fu">c</span>(</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>    <span class="co"># YOUR PREDICTORS HERE</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>    <span class="co"># !!! SOLUTION JUST TO RUN THE CODE !!!</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>    MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>  ), <span class="at">new_role =</span> <span class="st">&quot;predictor&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>  <span class="fu">update_role</span>(Sale_Price, <span class="at">new_role =</span> <span class="st">&quot;outcome&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>  <span class="co"># Feel free to play around with these and/or add new steps!</span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>  <span class="co"># We recommend you this set of &quot;starter-steps&quot; as those will at least take care</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>  <span class="co"># of the most glaring problems in the data-set (that we introduced 🙃).</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>  <span class="fu">step_impute_mean</span>(<span class="fu">all_numeric</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>  <span class="fu">step_string2factor</span>(Utilities, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;AllPub&quot;</span>, <span class="st">&quot;NoSewr&quot;</span>, <span class="st">&quot;NoSeWa&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>  <span class="fu">step_corr</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>preped_recipe <span class="ot">&lt;-</span> <span class="fu">prep</span>(rec, ames_workshop)</span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="co"># ames_workshop_baked &lt;- # COUR CODE TO APPLY THE PREPROCESSING HERE </span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co"># !!! SOLUTION !!!</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a>ames_workshop_baked <span class="ot">&lt;-</span> <span class="fu">bake</span>(preped_recipe, ames_workshop)</span></code></pre></div>
+</div>
+<div id="sampling-bootstrapping-1" class="section level2">
+<h2>Sampling &amp; Bootstrapping</h2>
+<div id="initial-split-1" class="section level3">
+<h3>Initial Split</h3>
+<ul>
+<li>Split the transformed data-set into a training and testing set.</li>
+<li>Use a proportion of .8.</li>
+<li>Extract the training and testing dataset from the initial split
+set.</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># YOUR CODE HERE</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#answer: </span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>ames_split_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(ames_workshop_baked, <span class="at">prop =</span> .<span class="dv">8</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>ames_split_ex</span></code></pre></div>
+<pre><code>## &lt;Training/Testing/Total&gt;
+## &lt;2344/586/2930&gt;</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>ames_train_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">training</span>(ames_split_ex)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>ames_test_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">testing</span>(ames_split_ex)</span></code></pre></div>
+</div>
+<div id="bootstrapping" class="section level3">
+<h3>Bootstrapping</h3>
+<div class="info">
+<p>Bootstrapping is the second method we can use to split our training
+set. This time we sample from the training set <strong>with
+replacement</strong> until we get a set including the number of rows as
+the original data set. The unused observations are then put in the
+assessment set. For more info, see slide x.</p>
+</div>
+<ul>
+<li>Use the <code>rsample::bootstraps</code> function to split the
+data-set <strong>3</strong> times.</li>
+</ul>
+<div class="info">
+<p>Note: where <code>vfold_cv</code> uses
+<code>v = xì, bootstraps employs</code>times = x`.</p>
+</div>
+<ul>
+<li>Extract the analysis sets.</li>
+</ul>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># This gives us a tibble with two columns: column 1 contains lists:</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="co"># Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID.</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># These become more important when working with a large number of bootstrap samples.</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>ames_bootstrap_ex <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">bootstraps</span>(ames_train_ex, <span class="at">times =</span> <span class="dv">3</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>ames_bootstrap_ex</span></code></pre></div>
+<pre><code>## # Bootstrap sampling 
+## # A tibble: 3 × 2
+##   splits             id        
+##   &lt;list&gt;             &lt;chr&gt;     
+## 1 &lt;split [2344/867]&gt; Bootstrap1
+## 2 &lt;split [2344/882]&gt; Bootstrap2
+## 3 &lt;split [2344/883]&gt; Bootstrap3</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># This part is not strictly necessary in order to proceed. Make sure to think about at some time, though. 🙂</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co"># Inspect the first bootstrap sample. How many observations do you expect in the analysis set?</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>ames_bootstrap_analysis <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>ames_bootstrap_assessment <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># !!! SOLUTION !!! </span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>ames_bootstrap_analysis <span class="ot">&lt;-</span> ames_bootstrap_ex<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">analysis</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>ames_bootstrap_assessment <span class="ot">&lt;-</span> ames_bootstrap_ex<span class="sc">$</span>splits[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> <span class="fu">assessment</span>()</span></code></pre></div>
+<div class="info">
+<p><strong>Note:</strong> It is possible to run different models with
+different modelling decisions on the various analysis sets to see how
+well different models can explain the data, but for simplicity’s sake,
+we’re keeping it to one model here!</p>
+</div>
+</div>
+</div>
+<div id="fitting-the-model" class="section level2">
+<h2>Fitting the Model</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Explanation</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: remove example code here and put placeholders for solution</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>fit_lm_bootstrap <span class="ot">&lt;-</span> <span class="cf">function</span>(split) {</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>  <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;lm&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a>    Sale_Price <span class="sc">~</span> MS_Zoning <span class="sc">+</span> Lot_Area <span class="sc">+</span> Overall_Cond <span class="sc">+</span> Exter_Cond <span class="sc">+</span> Year_Sold, </span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a>      <span class="at">data =</span> <span class="fu">analysis</span>(split))</span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a>}</span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a><span class="co"># I propose to keep this code, otherwise its really hard. Time is extremely short as is...</span></span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co">#Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.</span></span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>boot_ames_models <span class="ot">&lt;-</span></span>
+<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a>  ames_bootstrap_ex <span class="sc">%&gt;%</span> </span>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(splits, fit_lm_bootstrap),</span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a>         <span class="at">coef_info =</span> <span class="fu">map</span>(model, tidy))</span></code></pre></div>
+</div>
+<div id="evaluating-the-performance-of-your-model" class="section level2">
+<h2>Evaluating the Performance of your Model</h2>
+<div class="danger">
+<p>Make sure to fit the models on the test-sets first and then use
+performance metrics :)</p>
+</div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>model_to_evaluate <span class="ot">&lt;-</span> boot_ames_models[<span class="dv">1</span>,]<span class="sc">$</span>model[[<span class="dv">1</span>]]</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>test_set_to_evaluate_against <span class="ot">&lt;-</span> <span class="fu">assessment</span>(boot_ames_models[<span class="dv">1</span>,]<span class="sc">$</span>splits[[<span class="dv">1</span>]])</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>predictions_lm <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a> <span class="fu">select</span>(test_set_to_evaluate_against, Sale_Price),</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a> <span class="fu">predict</span>(model_to_evaluate, test_set_to_evaluate_against)</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>)</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: remove code comments, probably extract chunk to one to evaluate and one to not evaluate</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="co"># in order to not kill the knitting</span></span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a><span class="co"># One or more common performance estimates</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co"># metrics(</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a><span class="co">#   data = # YOUR CODE HERE</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a><span class="co">#   , truth = # YOUR CODE HERE</span></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a><span class="co">#   , estimate = # YOUR CODE HERE</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a><span class="co"># !!! SOLUTION !!!</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a><span class="fu">metrics</span>(<span class="at">data=</span> predictions_lm, <span class="at">truth =</span> Sale_Price, <span class="at">estimate =</span> .pred)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 rmse    standard   66791.   
+## 2 rsq     standard       0.245
+## 3 mae     standard   47638.</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># TO BE CORRECTED!!!</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="co"># Calculate symmetric mean absolute percentage error</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co"># Who has the lowest value?</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="co"># Answer: smape(predictions_lm, truth = mpg, estimate = .pred)</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="co"># OR</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="co"># Calculate the coefficient of determination (the traditional one)</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="co"># Who has the highest value?</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="co"># Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)</span></span></code></pre></div>
+<hr />
+</div>
 </div>
 <div id="sources" class="section level1">
 <h1>Sources</h1>

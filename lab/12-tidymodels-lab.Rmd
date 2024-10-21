@@ -264,20 +264,50 @@ reg_metrics(predictions, truth = Sale_Price, estimate = .pred)
 
 ```
 
+---
 
 # Exercise
 
-1. Loading and transforming the data with recipe
+::: info 
+Remember - the goal of this exercise is to build a well-performing model predicting the `Sale_Price` of a house.
+:::
 
+## Loading and Tranforming the Data with `recipe`
 
-2. Sampling & bootstrapping
+```{r}
+# Let's start from a clean slate and load the data-set anew!
+load("ames_workshop.RData")
+rec <- recipe(ames_workshop) %>%
+  update_role(c(
+    # YOUR PREDICTORS HERE
+    # !!! SOLUTION JUST TO RUN THE CODE !!!
+    MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold
+  ), new_role = "predictor") %>%
+  update_role(Sale_Price, new_role = "outcome") %>%
+  # Feel free to play around with these and/or add new steps!
+  # We recommend you this set of "starter-steps" as those will at least take care
+  # of the most glaring problems in the data-set (that we introduced 🙃).
+  step_impute_mean(all_numeric()) %>%
+  step_string2factor(Utilities, levels = c("AllPub", "NoSewr", "NoSeWa")) %>%
+  step_corr(all_numeric_predictors())
+preped_recipe <- prep(rec, ames_workshop)
+# ames_workshop_baked <- # COUR CODE TO APPLY THE PREPROCESSING HERE 
+# !!! SOLUTION !!!
+ames_workshop_baked <- bake(preped_recipe, ames_workshop)
+```
 
-2.1 Split the transformed dataset into a training and testing set. Use a proportion of .8. Extract the training and testing dataset from the initial split set. 
-```{r eval = FALSE}
-#write your code here
+## Sampling & Bootstrapping
+
+### Initial Split
+
+- Split the transformed data-set into a training and testing set.
+- Use a proportion of .8.
+- Extract the training and testing dataset from the initial split set. 
+```{r}
+# YOUR CODE HERE
 
 #answer: 
-ames_split_ex <- rsample::initial_split(ames_workshop, prop = .8)
+ames_split_ex <- rsample::initial_split(ames_workshop_baked, prop = .8)
 ames_split_ex
 
 ames_train_ex <- rsample::training(ames_split_ex)
@@ -285,54 +315,89 @@ ames_test_ex <- rsample::testing(ames_split_ex)
 
 ```
 
-2.2 Bootstrapping:
-Bootstrapping is the second method we can employ to split our training set. This time we sample from the training set with replacement until we get the same amount of the training set. The unsampled observations are then put in the assessment (out of the bag) set. For more info, see slide x. 
+### Bootstrapping
 
-Use the rsample::bootstraps function to split the dataset 3 times. Note: where vfold_cv uses v = x, bootstraps employs times = x. Extract the analysis sets.
-```{r eval = FALSE}
+::: info
+Bootstrapping is the second method we can use to split our training set. This time we sample from the training set __with replacement__ until we get a set including the number of rows as the original data set. The unused observations are then put in the assessment set. For more info, see slide x. 
+:::
+
+- Use the `rsample::bootstraps` function to split the data-set __3__ times. 
+
+::: info
+Note: where `vfold_cv` uses `v = xì, bootstraps employs `times = x`.
+:::
+
+- Extract the analysis sets.
+
+```{r}
+# This gives us a tibble with two columns: column 1 contains lists:
+# Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID.
+# These become more important when working with a large number of bootstrap samples.
 ames_bootstrap_ex <- rsample::bootstraps(ames_train_ex, times = 3)
 ames_bootstrap_ex
-#this gives us a tibble with two columns: column 1 contains lists: each list then contains an analysis and assessment set. The second column gives us the bootstrap ID, this become more important when working with a large number of bootstrap samples.
 
-#Inspect the first bootstrap sample. How many observations do you expect in the analysis set? 
+# This part is not strictly necessary in order to proceed. Make sure to think about at some time, though. 🙂
+# Inspect the first bootstrap sample. How many observations do you expect in the analysis set?
+ames_bootstrap_analysis <- # YOUR CODE HERE
+ames_bootstrap_assessment <- # YOUR CODE HERE
+# !!! SOLUTION !!! 
 ames_bootstrap_analysis <- ames_bootstrap_ex$splits[[1]] %>% analysis()
 ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
-
 ```
 
-Note: It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here.  
+::: info
+__Note:__ It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
+:::
 
-3. Model creation
+## Fitting the Model
 
-```{r eval = FALSE}
-#For Linus: 
-#Just to show what kind of code I used to map over the splits lists to get the model output in the penguin example:
-
-#so basically by putting in analysis(split) in the model, it's telling R to take the analysis set from the bootstrap sample and using model on it.
-fit_lm_penguin_bootstrap <- function(split) {
-    lm(body_mass_g ~ flipper_length_mm + sex, analysis(split), start = list(k = 1, b = 0))
+```{r}
+# TODO: Explanation
+# TODO: remove example code here and put placeholders for solution
+fit_lm_bootstrap <- function(split) {
+  linear_reg() %>%
+  set_engine("lm") %>%
+  fit(
+    Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold, 
+      data = analysis(split))
 }
 
+# I propose to keep this code, otherwise its really hard. Time is extremely short as is...
 #Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.
-boot_penguin_models <-
-  penguin_bootstrap %>% 
-  mutate(model = map(splits, fit_lm_penguin_bootstrap),
+boot_ames_models <-
+  ames_bootstrap_ex %>% 
+  mutate(model = map(splits, fit_lm_bootstrap),
          coef_info = map(model, tidy))
 ```
 
-4. Evaluation (make sure to run models on test set first and then use performance metrics :) 
+## Evaluating the Performance of your Model 
 
-```{r eval = FALSE}
-# TO BE CORRECTED!!!
+:::danger
+Make sure to fit the models on the test-sets first and then use performance metrics :)
+:::
 
+
+```{r}
+model_to_evaluate <- boot_ames_models[1,]$model[[1]]
+test_set_to_evaluate_against <- assessment(boot_ames_models[1,]$splits[[1]])
 predictions_lm <- bind_cols(
- select(auto_test, mpg),
- predict(linreg_reg_model, auto_test)
+ select(test_set_to_evaluate_against, Sale_Price),
+ predict(model_to_evaluate, test_set_to_evaluate_against)
 )
 
-# One or more common performance estimates
-# metrics(data= YOUR CODE, truth = YOUR CODE, estimate = YOUR CODE)
+# TODO: remove code comments, probably extract chunk to one to evaluate and one to not evaluate
+# in order to not kill the knitting
 
+# One or more common performance estimates
+# metrics(
+#   data = # YOUR CODE HERE
+#   , truth = # YOUR CODE HERE
+#   , estimate = # YOUR CODE HERE
+#   )
+# !!! SOLUTION !!!
+metrics(data= predictions_lm, truth = Sale_Price, estimate = .pred)
+
+# TO BE CORRECTED!!!
 # Calculate symmetric mean absolute percentage error
 # Who has the lowest value?
 
@@ -345,6 +410,8 @@ predictions_lm <- bind_cols(
 
 # Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)
 ```
+
+---
 
 # Sources
 
