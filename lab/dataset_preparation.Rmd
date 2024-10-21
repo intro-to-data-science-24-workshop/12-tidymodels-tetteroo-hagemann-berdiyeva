@@ -16,6 +16,8 @@ ames_workshop <- ames |>
 ames_workshop$secret_sauce <- ames_workshop$Lot_Frontage
 # remove some variables to have NA in there, these are numeric, in order to impute them later
 r_na(x = ames_workshop, cols = c(2,3), prob = .1) -> ames_workshop
+ames_workshop |>
+    filter(MS_Zoning != 'A_agr' | MS_Zoning != 'C_all' | MS_Zoning != 'I_all')
 ```
 
 ```{r}
