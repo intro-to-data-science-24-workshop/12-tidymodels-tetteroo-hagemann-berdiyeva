@@ -113,27 +113,71 @@ The following table gives you a quick overview of the available features (in the
 
 Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task! 
 
-# Splitting the Data-Set
-We are going to use the package Rsample: in what ways can we split our dataset, what kind of output can we expect and some next steps. 
+# Feature Egineering
 
-# Example.
-    
-1. Loading and transforming the data with recipe
+First, we need to pre-process our data in order to make it suitable for use inside of a model. Remember, that each type of model has some requirements on the data, which are grounded in theory. __We will not focus too much on this here. This means this guide is really just concerned with how to do the modelling process with `tidymodels`. Thus, the modelling itself is not extremely solid.__
 
+Let's investigate the data-set a bit:
 
-2. Sampling & bootstrapping
+```{r}
+head(ames_workshop)
+```
+From this alone, we can already gather some aspects of the data-set which are problematic. In the `Lot_Frontage` column we can see missing values. Additionally, we can already see that `Utilities` are contained as strings. These we cannot use in our linear model and would like the column to be a [`factor`](https://r4ds.had.co.nz/factors.html) instead. Let's use `recipe` in order to pre-process our data:
+
+```{r}
+rec <- recipe(ames_workshop) %>%
+  update_role(c(MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold), new_role = "predictor") %>%
+  update_role(Sale_Price, new_role = "outcome") %>%
+  step_impute_mean(all_numeric()) %>%
+  step_string2factor(Utilities, levels = c("AllPub", "NoSewr", "NoSeWa")) %>%
+  step_corr(all_numeric_predictors())
+preped_recipe <- prep(rec, ames_workshop)
+```
+
+What's going on here?
+
+1. We create a recipe concerned with the `ames_workshop` data-set, and will store the end-result in a variable called `rec`
+2. Inside of recipes, variables can have different [roles](https://recipes.tidymodels.org/articles/Roles.html). The most important ones are "outcome" and "predictor". These specify which variables are our independent ones inside of the model and what is the outcome that we want to predict. We could also specify a `formula` already at this time, but postpone this for later.
+3. After setting the appropriate roles, a recipe is a series of "steps" (see where the cooking analogy comes from? 🧑‍🍳). Each step is named after a common task when doing feature-engineering/pre-processing. You can find all available steps in [the documentation](https://recipes.tidymodels.org/reference/index.html). As the argument to each step, we need to specify the variables on which to perform the step (the ingredients! 😉). Here, the roles come in handy: `recipes` provides us with a set of functions which can be used to easily select the variables for a step, without the need to specify concrete variable names - this makes for easy code-reuse throughout different projects and make the code a bit more resistant towards name changes. We use the following steps in our recipe:
+
+- Impute any missing values in any __numeric predictors__ with the __mean__ value of that column.
+- Convert the strings in `Utilities` to a factors so that we can use it in our linear model.
+- `step_corr` removes all numeric predictors which have high correlation between each other. For each group of variables that are highly correlated with each other, one will be kept.
+
+4. `prep` now takes these instructions and prepares them on our data-set. This for instance includes finding the correlating predictors, calculating the necessary mean values for imputation and so on.
+
+::: danger
+At this point, we have not yet changed the original data-set, but just made the necessary preparations for that! Think of a bowl of dough - that's not a 🎂 yet!
+:::
+
+```{r}
+ames_workshop <- bake(preped_recipe, ames_workshop)
+```
+
+`bake` is the final step in applying our recipe to our actual data-set. Usually, it would be good idea to __not overwrite__ your original data-set, so that you have an easier time to compare the data before and after pre-processing. We opted to this here for the sake of clearnes.
+
+Now, let's roughly check how the data looks now:
+
+```{r}
+head(ames_workshop)
+```
+As we can see, the missing values in `Lot_Frontage` are gone and the `Utilities` column is now coded as a `factor`.
+Note also that we still have 16 variables - our predictors do not contain any highly correlated numerical columns! Remember - they would have been dropped otherwise by `step_corr`. 
+
+# Sampling & bootstrapping
 
 ## Initial Split
+
 We first split the entire dataset into the training and testing dataset (see slide x). For a split of 75-25% we use .75 as argument.
 
 ```{r eval = FALSE}
 ames_split <- rsample::initial_split(ames_workshop, prop = .75)
 ames_split
-
 ```
 We can see it partitioned the datset into training (2197 observations) and testing (733 observations). It also gives us the total amount, namely 2930.
 
 ## Training and testing
+
 We need one more step to have our training and testing dataset:  
 
 ```{r}
@@ -145,6 +189,7 @@ Now we're ready to do some advanced splitting of our training dataset!
 
 
 ## Cross validation and V-Fold
+
 This example will focus on v-fold cross validation to further split our training set. Basically, we tell R to split our dataset x amount of times in two groups with a set size (without replacement).
 
 ```{r}
@@ -156,13 +201,14 @@ ames_folds
 ames_folds$splits[[1]] %>% analysis() %>% dim()
 #to look into the analysis set of the first split:
 ames_folds$splits[[1]] %>% analysis() 
-
 ```
 
-As you can see, we have not split the training set into 5 sets that consist of an analysis and assessment set. The analysis sets are used to run one or multiple models on, the assessment set acts as a test set to see how well the models explain new data. During research, we can use these various analysis and assessment sets to compare different models and see which one we want to run on our test set. Since we can only run one model on the test set, we need to be confident in the performance of our final model.
+As you can see, we have now split the training set into 5 sets that consist of an analysis and assessment set. The analysis sets are used to run one or multiple models on, the assessment set acts as a test set to see how well the models explain new data. During research, we can use these various analysis and assessment sets to compare different models and see which one we want to run on our test set. Since we can only run one model on the test set, we need to be confident in the performance of our final model.
 
-!!!Important that the models are run on the analysis sets of the ames_folds tibble :) 
-3. Model creation
+::: danger
+⚠️ Important: The models need to be run on the analysis sets of the ` ames_fold`s tibble :) 
+:::
+
 
 
 4. Evaluation (run model on test set (ames_test) and use that for performance estimate :)
