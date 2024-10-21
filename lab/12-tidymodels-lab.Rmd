@@ -233,12 +233,18 @@ Note, that we __use the training-set of our first split to train/fit the model!_
 
 ## Model evaluation
 
-4. Evaluation (run model on test set (ames_test) and use that for performance estimate :)
+Now, let's see how well our models performs:
+
+:::danger 
+⚠ To evaluate model performance, always use the __test__ set of the data-split!
+:::
+
 ```{r eval = FALSE}
-# parsnip model ALWAYS returns the results as a data frame 
+# parsnip model ALWAYS returns the results as a data frame
+test_set <- ames_folds$splits[[1]] %>% assessment()
 predictions <- bind_cols(
-  select(auto_test, mpg),
-  predict(model, auto_test)
+  select(test_set, Sale_Price),
+  predict(model, test_set)
 )
 
 # And here comes yardstick
@@ -246,13 +252,13 @@ predictions <- bind_cols(
 # When "truth" is numeric: rmse, rsq and mae.
 
 # Estimate one or more common performance estimates depending on the class of truth 
-metrics(predictions, truth = older, estimate = .pred)
+metrics(predictions, truth = Sale_Price, estimate = .pred)
 
 # Regression metrics
 reg_metrics <- metric_set(huber_loss, iic, mape, mase)
 
 # The returned function has the same arguments as metrics()
-reg_metric(predictions, truth = mpg, estimate = .pred)
+reg_metrics(predictions, truth = Sale_Price, estimate = .pred)
 
 ```
 
