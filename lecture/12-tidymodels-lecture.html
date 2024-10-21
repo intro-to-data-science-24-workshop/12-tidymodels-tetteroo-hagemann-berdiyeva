@@ -34,6 +34,10 @@ class: center, middle, inverse, title-slide
 }
 .large-code { font-size: 25px; }
 
+.large-center {
+    text-align: center;
+    font-size: 20px;
+}
 &lt;/style&gt;
 
 # Welcome to our Workshop on tidymodels!
@@ -43,7 +47,7 @@ class: center, middle, inverse, title-slide
 4. [Splitting Your Data-Set with `rsample`](#Rsample)
 3. [Modelling in R with `parsnip`](#parsnip)
 5. [Evaluating Model Performance using `yardstick`](#Yardstick)
-7. [Futher Ressources](#ressources)
+7. [Futher Resources](#resources)
 
 ---
 name: tidymodels
@@ -367,9 +371,30 @@ Measuring the accuracy in prediction of continuous numeric values
 | smape()               | Symmetric Mean Absolute Percentage Error | 0 &lt; x &lt; 1, the lower the better |
 
 ---
-name: ressources
+# Regression Metrics
 
-# Further Ressources and Sources
+#### Mean Absolute Error (MAE)
+$$
+MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+$$
+
+#### Root Mean Squared Error
+$$
+RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} \
+$$
+
+#### R squared
+&lt;div class='large-center'&gt;$$ R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y_i})^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2} $$&lt;/div&gt;
+
+- `\(n\)` = Number of observations
+- `\(y_i\)` = Actual value for observation `\(i\)`
+- `\(\hat{y}_i\)` = Predicted value for observation `\(i\)`
+- `\(\bar{y}\)` = Mean of the dependent variable
+
+---
+name: resources
+
+# Further Resources and Sources
 
 - 🌐 Website of the [`tidymodels`](https://www.tidymodels.org/) package, including documentation and guides
     - `tidymodels` consists of many more packages than we could cover in this session!

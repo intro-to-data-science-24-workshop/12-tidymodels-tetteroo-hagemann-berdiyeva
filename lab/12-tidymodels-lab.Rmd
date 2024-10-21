@@ -114,6 +114,7 @@ The following table gives you a quick overview of the available features (in the
 | secret_sauce | A special feature just for you! Can this improve our predictions? |
 
 Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task! 
+
 # The Modelling Process with `tidymodels`
 
 ## Feature Egineering
@@ -129,7 +130,8 @@ From this alone, we can already gather some aspects of the data-set which are pr
 
 ```{r}
 rec <- recipe(ames_workshop) %>%
-  update_role(c(MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold), new_role = "predictor") %>%
+  update_role(c(MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold), 
+              new_role = "predictor") %>%
   update_role(Sale_Price, new_role = "outcome") %>%
   step_impute_mean(all_numeric()) %>%
   step_string2factor(Utilities, levels = c("AllPub", "NoSewr", "NoSeWa")) %>%
@@ -157,7 +159,7 @@ At this point, we have not yet changed the original data-set, but just made the 
 ames_workshop <- bake(preped_recipe, ames_workshop)
 ```
 
-`bake` is the final step in applying our recipe to our actual data-set. Usually, it would be good idea to __not overwrite__ your original data-set, so that you have an easier time to compare the data before and after pre-processing. We opted to this here for the sake of clearnes.
+`bake` is the final step in applying our recipe to our actual data-set. Usually, it would be good idea to __not overwrite__ your original data-set, so that you have an easier time to compare the data before and after pre-processing. We opted to this here for the sake of clearness.
 
 Now, let's roughly check how the data looks now:
 
@@ -171,7 +173,7 @@ Note also that we still have 16 variables - our predictors do not contain any hi
 
 ### Initial Split
 
-We first split the entire dataset into the training and testing dataset (see slide x). For a split of 75-25% we use .75 as argument.
+We first split the entire dataset into the training and testing dataset (see slide 8). For a split of 75-25% we use .75 as argument.
 
 ```{r}
 ames_split <- rsample::initial_split(ames_workshop, prop = .75)
@@ -227,7 +229,8 @@ We use `parsnip` to denote our model in a headache-free, standardized way:
 ```{r}
 model <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold, data = ames_folds$splits[[1]] %>% analysis())
+  fit(Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold, 
+      data = ames_folds$splits[[1]] %>% analysis())
 ```
 
 Due to the power of `parsnip`, we can simply specify that we want to use a linear regression model, specifically the implementation provided by `stat::lm()`. The different implementations are called "engines" by `parsnip`.
@@ -261,7 +264,6 @@ reg_metrics <- metric_set(huber_loss, iic, mape, mase)
 
 # The returned function has the same arguments as metrics()
 reg_metrics(predictions, truth = Sale_Price, estimate = .pred)
-
 ```
 
 ---
@@ -291,7 +293,7 @@ rec <- recipe(ames_workshop) %>%
   step_string2factor(Utilities, levels = c("AllPub", "NoSewr", "NoSeWa")) %>%
   step_corr(all_numeric_predictors())
 preped_recipe <- prep(rec, ames_workshop)
-# ames_workshop_baked <- # COUR CODE TO APPLY THE PREPROCESSING HERE 
+# ames_workshop_baked <- # YOUR CODE TO APPLY THE PREPROCESSING HERE 
 # !!! SOLUTION !!!
 ames_workshop_baked <- bake(preped_recipe, ames_workshop)
 ```
@@ -318,13 +320,13 @@ ames_test_ex <- rsample::testing(ames_split_ex)
 ### Bootstrapping
 
 ::: info
-Bootstrapping is the second method we can use to split our training set. This time we sample from the training set __with replacement__ until we get a set including the number of rows as the original data set. The unused observations are then put in the assessment set. For more info, see slide x. 
+Bootstrapping is the second method we can use to split our training set. This time we sample from the training set __with replacement__ until we get a set including the number of rows as the original data set. The unused observations are then put in the assessment set. For more info, see slide 10. 
 :::
 
 - Use the `rsample::bootstraps` function to split the data-set __3__ times. 
 
 ::: info
-Note: where `vfold_cv` uses `v = xì, bootstraps employs `times = x`.
+Note: where `vfold_cv` uses `v = xì`, bootstraps employs `times = x`.
 :::
 
 - Extract the analysis sets.
@@ -377,12 +379,11 @@ Make sure to fit the models on the test-sets first and then use performance metr
 :::
 
 
-```{r}
+```{r eval=FALSE}
 model_to_evaluate <- boot_ames_models[1,]$model[[1]]
-test_set_to_evaluate_against <- assessment(boot_ames_models[1,]$splits[[1]])
 predictions_lm <- bind_cols(
- select(test_set_to_evaluate_against, Sale_Price),
- predict(model_to_evaluate, test_set_to_evaluate_against)
+ select(ames_test_ex, Sale_Price),
+ predict(model_to_evaluate, ames_test_ex)
 )
 
 # TODO: remove code comments, probably extract chunk to one to evaluate and one to not evaluate
@@ -397,18 +398,10 @@ predictions_lm <- bind_cols(
 # !!! SOLUTION !!!
 metrics(data= predictions_lm, truth = Sale_Price, estimate = .pred)
 
-# TO BE CORRECTED!!!
-# Calculate symmetric mean absolute percentage error
-# Who has the lowest value?
-
-# Answer: smape(predictions_lm, truth = mpg, estimate = .pred)
-
-# OR
-
 # Calculate the coefficient of determination (the traditional one)
 # Who has the highest value?
 
-# Answer: rsq_trad(predictions_lm, truth = mpg, estimate = .pred)
+# Answer: rsq_trad(predictions_lm, truth = Sale_Price, estimate = .pred)
 ```
 
 ---
