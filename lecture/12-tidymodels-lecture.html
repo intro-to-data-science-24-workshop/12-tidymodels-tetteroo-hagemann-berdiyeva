@@ -4,6 +4,7 @@
     <title>Introduction to Data Science - Workshop 2024</title>
     <meta charset="utf-8" />
     <meta name="author" content="Franka Tetteroo, Linus Hagemann &amp; Sofiya Berdiyeva" />
+    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
@@ -25,175 +26,221 @@ class: center, middle, inverse, title-slide
 ---
 
 
-
 &lt;style type="text/css"&gt;
 @media print { # print out incremental slides; see https://stackoverflow.com/questions/56373198/get-xaringan-incremental-animations-to-print-to-pdf/56374619#56374619
   .has-continuation {
     display: block !important;
   }
 }
+.large-code { font-size: 25px; }
+
 &lt;/style&gt;
 
-#Welcome to our workshop on tidymodels!
-Table of contents
+# Welcome to our Workshop on tidymodels!
 
-1. [Tidymodels: A brief overview](#Tidymodels: A brief overview)&lt;sup&gt;1&lt;/sup&gt;
-
-2. [Recipe](#Recipe)
-
-3. [Parsnip](#Parsnip)
-
-4. [Rsample](#Rsample)
-
-5. [Yardstick](#Yardstick)
-
-6. [Example and Exercise](#ex and ex)
-
-7. [For further investigation](#other)
+1. [Tidymodels: A Brief Overview](#tidymodels)
+2. [Preprocesing with `recipes`](#recipes)
+4. [Splitting Your Data-Set with `rsample`](#Rsample)
+3. [Modelling in R with `parsnip`](#parsnip)
+5. [Evaluating Model Performance using `yardstick`](#Yardstick)
+7. [Futher Ressources](#ressources)
 
 ---
-name: Tidymodels: A brief overview
-- Tidymodels encompasses a large range of packages, each targeted at a specific part of the modelling process. Graphically: 
+name: tidymodels
 
+# tidymodels
+- `tidymodels` is a __collection of packages__
+- each package is targeted at a specific part of the modelling process
+
+&lt;div align="center"&gt;
+&lt;img src="pics/Tidymodels_flowchart.jpg" height=400&gt;
+&lt;a href="https://rpubs.com/chenx/tidymodels_tutorial"&gt;rpubs.com&lt;/a&gt;
+&lt;/div&gt;
 
 ---
-#The different packages:
-Goal of each package:
-1. rsamples - to split the data into training and testing, analysis and assessment sets 
-2. recipes - to prepare the data with preprocessing 
-3. parsnip - to specify and fit the data to a model
-4. yardstick and tune - to evaluate model performance
-5. workflows - to combine recipe and parsnip objects into a workflow 
-6. tune and dials - to optomise models  
-7. broom - to increase the readability of model output
+# Overview of tidymodels packages:
 
-For other great overviews of how the packages complement eachother and fit within the whole modelling process, click [here]{https://rpubs.com/chenx/tidymodels_tutorial}
+.pull-left[
 
+## Goal of each package:
+
+1. __`rsamples`__ - to split the data into training and testing-sets
+2. __`recipes`__ - to prepare the data with pre-processing
+3. __`parsnip`__ - to specify and fit a model to the data
+4. __`yardstick`__ and `tune` - to evaluate model performance
+5. `workflows` - to combine `recipe` and `parsnip` objects into a workflow 
+6. `tune` and `dials` - to optimize models  
+7. `broom` - to increase the readability of model output
+8. ...
+
+For another great overview of how the packages complement each other and fit within the whole modelling process, click [here](https://rpubs.com/chenx/tidymodels_tutorial).
+]
+
+.pull-right[
+&lt;div align="center"&gt;
+&lt;img src="pics/all_tidymodel_packages.jpeg" height=400&gt;
+&lt;a href="https://rpubs.com/chenx/tidymodels_tutorial"&gt;rpubs.com&lt;/a&gt;
+&lt;/div&gt;
+]
+
+---
+name: recipes
+# Preprocessing and Feature Engineering
+
+- __Data needs to be clean__
+- Data needs to adhere to some model-specific rules and assumptions
+
+--
+
+&gt; __Feature Engineering__
+&gt; The process of transforming raw data into features well suited-for modelling.
+
+--
+
+- What does this entail?
+    - Removing `NA`'s -&gt; how to deal with them? Throw data away? Impute with mean/median/...?
+    - Transform numeric values (`log`, `sqrt`,...)
+    - Re-scale numeric values
+    - Deal with nominal/string values
+    - ....
+---
+# Pre-Processing with _recipes_
+
+- While all of this can be coded by hand, `recipes` make our life's easier by providing the necessary operations in a __standardized__ way
+- Feels familiar to `tidyverse` users and is compatible with `dplyr` 
+
+.large-code[
+
+```r
+recipe(outcome ~ ., data = training_data) %&gt;%
+      # remove features with high correlation between them
+      step_corr(all_predictors()) %&gt;%
+      step_string2factor(all_string_predictors()) %&gt;%
+      step_impute_mean(all_numeric_predictors()) %&gt;%
+      step_mutate(&lt;dplyr call&gt;)
+```
+]
+
+--
+
+- Can be reused easily, as we can rely on roles/types and not specific variable names
+--
+
+- Use
+    - __`prep()`__ to calculate pre-processing parameters (e.g., mean to impute)
+    - __`bake()`__ to apply the pre-processing steps to the actual data
 ---
 name: Rsample
 
-# **Rsample** package
-.pull-left[
-Useful to split your data into testing and training subsets:
+# Splitting Your Data-Set with _rsample_
 
-Why do we care? 
-- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
+.pull-left[
+Useful to split your data into __testing__ and __training__ subsets:
+
+### Why do we care?
+
+- Model should explain the data, not memorize it
+- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters
+&lt;!-- QUESTION: The following two points I do not understand - fitting the final model multiple times would not change the outcome, no? --&gt;
+&lt;!-- Does this in the end mean the same thing as the first point I sneakily added? --&gt;
 - The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
-  - If we run multiple models on the test set, we start to optimise our model to the test set instead of focusing on the model's general ability to explain the dataset. 
+  - If we run multiple models on the test set, we start to optimize our model to the test set instead of focusing on the model's general ability to explain the data-set.
 ]
 
 .pull-right[
-&lt;div align="center"&gt;
-&lt;img src="pics/Datasplittingscheme.png" height=300&gt;
+&lt;div style="top: 30%;position: absolute;"&gt;
+&lt;img src="pics/Datasplittingscheme.png" height=350&gt;
+&lt;a href="https://www.tmwr.org/resampling"&gt;tmwr.org&lt;/a&gt;
+
 &lt;/div&gt;
 ]
 ---
-# **Different ways of splitting your dataset**
-
+# Different Ways of Splitting Your Data-Set
 
 .pull-left[
-- Initial split (training vs testing) --&gt; initial_split(dataset, prop = 0.x, strata = desired column)
-- Cross validation and V-fold
+- Initial split (__training__ vs __testing__)
+```r
+initial_split(
+    dataset,
+    prop = 0.x,
+    strata = &lt;desired column&gt;)
+```
+- Cross Validation and V-fold
 - Bootstraps
-- Rolling forecast
+- Rolling Forecast
 ]
 
 .pull-right[
-&lt;div align="center"&gt;
-&lt;img src="pics/One_Does_Not_Simply_Split.png" height=300&gt;
+&lt;div style="top: 30%;position: absolute;"&gt;
+&lt;img src="pics/One_Does_Not_Simply_Split.jpg" height=300&gt;
 &lt;/div&gt;
 ]
 ---
-# Cross validation and V-fold
-
+# Cross Validation and V-fold
 
 .pull-left[
-- The data is split into v-sets of data called folds of equal size.  
-- Function: vfold_cv(dataset, v = x)
-  - E.g. x = 3, the data is split in three different ways with 2/3 in analysis en 1/3 is assessment.
+- The data is split into `v`-sets of data called __folds__ of equal size.  
+- Function: `vfold_cv(dataset, v = x)`
+  - E.g., `x = 3`, the data is split in three different ways with 2/3 in analysis en 1/3 is assessment.
   - The default is set to 10, this is still manageable but enough to produce robust results. 
-- Output is a tibble containing lists, each list contains information on how the data is split.
+- Output is a `tibble` containing `lists`, each list contains information on how the data is split.
   - We can unpack the first column to get our analysis and assessment set. 
 - For more information and variants of cross validation check out: [Tidy Modelling with R Ch 10](https://www.tmwr.org/resampling).
 ]
 
 .pull-right[
-&lt;div align="center"&gt;
-&lt;img src="pics/V-fold.png" height=300&gt;
+&lt;div style="top: 30%;position: absolute;"&gt;
+&lt;img src="pics/V-fold.png" height=350&gt;
+&lt;a href="https://www.tmwr.org/resampling"&gt;tmwr.org&lt;/a&gt;
 &lt;/div&gt;
 ]
 ---
 # Bootstrapping
 
 .pull-left[
-- Analysis sets are sampled from training dataset **with** replacement.
-  - Has the same size as the training dataset
+- Analysis sets are sampled from data-set **with** replacement.
+  - Has the same size as the initial data-set
 - Analysis vs Assessment (Out-of-the bag) split
+&lt;!-- QUESTION: Is this a rhetoric remark?  --&gt;
   - Why does the assessment set differ in size?
-- Function: bootstraps(dataset, times = x).
-
+- Function: `bootstraps(dataset, times = x)`
+]
 
 .pull-right[
-&lt;div align="center"&gt;
+&lt;div style="top: 30%;position: absolute;"&gt;
 &lt;img src="pics/Bootstrap.png" height=300&gt;
+&lt;a href="https://www.tmwr.org/resampling"&gt;tmwr.org&lt;/a&gt;
 &lt;/div&gt;
 ]
 ---
+&lt;!-- QUESTION: You are sure that you come out with the allotted time? This is the thing I would propose to cut out first to be honest; just as its the most advanced.... --&gt;
 # Rolling Forecasting Origing Resampling
+
 .pull-left[
-- If our dataset has a temporal component, simply random sampling can disrupt the model in estimating patterns.
-  - Solution: fit_resamples(formula, resamples, ...)
+- If our data-set has a __temporal__ component, simply random sampling can disrupt the model in estimating patterns.
+  - Solution:&lt;/br&gt;
+  `fit_resamples(formula, resamples, ...)`
 - We set the size of the analysis and assessment sets. The first sample follows this division, the second iteration takes the same data size but shifts by a specified number. 
-- Alternatively we don't have to shift by one day but also by one week or more. 
 ]
 
 .pull-right[
-&lt;div align="center"&gt;
-&lt;img src="pics/RollingForecasting.png" height=300&gt;
+&lt;div style="top: 30%;position: absolute;"&gt;
+&lt;img src="pics/Temporal_Forecasting.png" height=350&gt;
+&lt;a href="https://www.tmwr.org/resampling"&gt;tmwr.org&lt;/a&gt;
 &lt;/div&gt;
 ]
 ---
-# Preprocessing and Feature Engineering
+name: parsnip
 
-- Data needs to adhere to some model-specific rules and assumptions
-
-&gt; __Feature Engineering__
-&gt; The process of transforming raw data into features well suited-for modelling.
-
-- What does this entail?
-    - removing NA's -&gt; how to deal with them? Throw data away? Impute with mean/median/...?
-    - Transform numeric values (`log`, `sqrt`,...)
-    - Rescale numeric values
-    - deal with nominal/string values
-    
----
-# Pre-processing with recipes
-
-- While all of this can be coded by hand, `recipes` make our life's easier by providing the necessary operations in a standardized way
-- familiar to `tidyverse` users and compatible with `dplyr` 
-```r
-rec &lt;- recipe(predictor ~ ., data = training_data) %&gt;%
-      step_corr(all_predictors()) %&gt;% # remove features with high correlation between them
-      step_string2factor(all_string_predictors()) %&gt;%
-      step_impute_mean(all_numeric_predictors()) %&gt;%
-      step_mutate(&lt;dplyr call&gt;)
-```
---
-- can be reused easily, as we can rely on roles and not specific variable names
---
-&lt;br&gt;
-- Use
-    - `prep()` to calculate pre-processing parameters (e.g., mean to impute)
-    - `bake()` to apply the pre-processing steps to the actual data
----
 # Modelling in R
 
 - Many different models to choose from
     - Type of model to use is an important decision, which needs to grounded __in theory__
 - For each type of model, multiple implementations are available
-- Consider these examples for linear regression models:
 ---
 # Modelling in R
+
+- Consider these examples for linear regression models:
 
 - `stat::lm()`
 ```r
@@ -217,58 +264,72 @@ ml_linear_regression(x, formula = NULL, fit_intercept = TRUE, [...], standardiza
 - Syntax differs
     - in argument order
     - in argument names
-    - (in output formatting/reporting -&gt; __later__)
+    - ...
     
 &lt;img src="pics/so_many_syntaxes.jpg" height=300&gt;
 ]
 --
 .pull-right[
-- Parsnip to the rescue!
+- __`parsnip` to the rescue__!
 
 &lt;img src="pics/parsnip_logo.png" height=300&gt;
 ]
 ---
 # parsnip
 
-- package that aims to unify signatures of different models in `R`
-- one familiar approach to **many different types of models**
+- Package that aims to unify signatures of different models in `R`
+- One familiar approach to **many different types of models**
     - [Searchable list](https://www.tidymodels.org/find/parsnip/) of all models available through `parsnip`
 
+.large-code[
 ```
   linear_reg() %&gt;% 
-  set_engine("lm") %&gt;% 
-  fit(dependent ~ pred_one + pred_two, data = data)
+      set_engine("lm") %&gt;% 
+      fit(dependent ~ pred_one + pred_two, data = data)
 ```
+]
 --
-&lt;br&gt;
+
 - `linear_reg()`, `decision_tree()`, `logistic_reg()`, ...
 - `set_engine` to specify which implementation to use
-- unified way of fitting a model to a dataset: `fit()`
-- unified way of predicting the outcome on a dataset: `predict(fitted_model, data)`
+- Unified way of fitting a model to a data-set: __`fit()`__
+- Unified way of predicting the outcome on a data-set: __`predict(fitted_model, data)`__
 
 ---
 name: Yardstick
 
-# **yardstick** package
+# Evaluating Model Performance with **yardstick**
 
 Contains tools for computing statistical performance metrics
 
+.pull-left[
 - Consistent Syntax 
 - Wide Range of Metrics (43)
 - Grouped calculations (e.g. `demographic_parity()`)
-- Customization (e.g. `new-metric()` see more on [custom performance metrics](https://www.tidymodels.org/learn/develop/metrics/))
+- Customization (e.g. `new-metric()`, see more on [custom performance metrics](https://www.tidymodels.org/learn/develop/metrics/))
 
-`metrics(data, truth, estimate, ..., na_rm = TRUE, options = list())`
+```r
+metrics(
+    data,
+    truth,
+    estimate, 
+    ..., 
+    na_rm = TRUE,
+    options = list()
+)
+```
 
-[Manual](https://cran.r-project.org/web/packages/yardstick/yardstick.pdf)
-
+[Find more Information in the Documentation.](https://cran.r-project.org/web/packages/yardstick/yardstick.pdf)
+]
+.pull-right[
 &lt;div align="center"&gt;
-&lt;img src="pics/Metrics_meme.png" height=300&gt;
+&lt;img src="pics/Metrics_meme.png" height=500&gt;
 &lt;/div&gt;
-
+]
 
 ---
-# Classification metrics
+&lt;!-- QUESTION: Do you still want to add some explanation for anything on these? Or will you say that during the presentation? --&gt;
+# Classification Metrics
 
 Measuring the accuracy in prediction of categories
 
@@ -288,7 +349,7 @@ Measuring the accuracy in prediction of categories
 
 
 ---
-# Regression metrics
+# Regression Metrics
 
 Measuring the accuracy in prediction of continuous numeric values
 
@@ -306,21 +367,18 @@ Measuring the accuracy in prediction of continuous numeric values
 | smape()               | Symmetric Mean Absolute Percentage Error | 0 &lt; x &lt; 1, the lower the better |
 
 ---
-class: inverse, center, middle
-name: ex and ex
+name: ressources
 
-# Example and Exercise
-&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px style="width:1000px; margin:auto;"/&gt;&lt;/html&gt;
----
-Name: Sources and Other resources
-
-# Further Ressources
+# Further Ressources and Sources
 
 - 🌐 Website of the [`tidymodels`](https://www.tidymodels.org/) package, including documentation and guides
     - `tidymodels` consists of many more packages than we could cover in this session!
 - 📖 [Tidy Modelling with R](https://www.tmwr.org/)
-- 📺 [Get started with tidymodels and classification of penguin data by Julia Silge](Get started with tidymodels and classification of penguin data)
+- 📺 [Get started with tidymodels and classification of penguin data by Julia Silge](https://www.youtube.com/watch?v=z57i2GVcdww)
 - 📺 [tidymodels: Adventures in Rewriting a Modeling Pipeline - posit::conf(2023)](https://www.youtube.com/watch?v=R7XNqcCZnLg)
+- 📜 [A Gentle Introduction to tidymodels](https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/)
+- 📜 [Tidymodels Ecosystem Tutorial](https://rpubs.com/chenx/tidymodels_tutorial)
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
