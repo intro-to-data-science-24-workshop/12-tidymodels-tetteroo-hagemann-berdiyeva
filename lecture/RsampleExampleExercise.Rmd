@@ -130,6 +130,9 @@ ggplot(boot_penguin_aug, aes(flipper_length_mm, body_mass_g)) +
   geom_line(aes(y = .fitted, group = id), alpha = .2, col = "blue") +
   geom_point()
 
+
+?rolling_or
+
 ```
 
 If you're interested in an in-depth example of tidying v-fold sets, please consult: https://www.stepbystepdatascience.com/ml-with-tidymodels. 

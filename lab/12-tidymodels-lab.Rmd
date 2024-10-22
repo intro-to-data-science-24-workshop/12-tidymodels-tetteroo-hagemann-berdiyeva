@@ -64,6 +64,7 @@ We will cover:
 
 - splitting your data-set into a training and a test set using `rsample`,
 - pre-processing your data-set using `recipes`,
+- splitting your training set into various subsets using `rsample`,
 - fitting a model using `parsnip`,
 - and finally evaluate the performance of the model using `yardstick`.
 
@@ -74,14 +75,14 @@ For those of you attending this session live - stay tuned, as __there will be a 
 ::: danger
 ⚠️ __Attention__
 
-Modelling is an extremely complex topic. Choosing an appropriate model for a specific task requires theoretical deliberation and careful consideration of the data at hand. As was seen in the lecture, hand-picking specific model configurations can rightfully be criticized and requires justification grounded in theory.
+Modelling is an extremely complex topic. Choosing an appropriate model for a specific task requires theoretical deliberation and careful consideration of the data at hand. As we have seen in the lecture, hand-picking specific model configurations can rightfully be criticized and requires justification grounded in theory.
 
-All of these are outside of the scope of this workshop - we aim at giving you a glimpse on how to use selected `R` packages. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
+All of these are outside of the scope of this workshop - we aim at giving you a glimpse on how to use three selected `R` packages that we deem interesting and useful. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
 :::
 
 # Our Dataset
 
-Throughout this exercise, we are working with a specially prepared version of the [`ames`](https://jse.amstat.org/v19n3/decock/DataDocumentation.txt) data-set, which is part of the `modeldata` package. The data-set contains information about houses in the region of Ames in Iowa (US). We prepared a smaller version of the data-set for this unit, in order to reduce the amount of different features (columns) to understand in the data-set and introduce some need for pre-processing.
+Throughout this exercise, we are working with a specially prepared version of the [`ames`](https://jse.amstat.org/v19n3/decock/DataDocumentation.txt) data-set, which is part of the `modeldata` package. The data-set contains information about houses in the region of Ames in Iowa (US). We prepared a smaller version of the data-set for this unit by reducing the amount of different features (columns) to understand in the data-set and introducing some need for pre-processing.
 
 ```{r}
 # install.packages("tidymodels")
@@ -128,7 +129,7 @@ Let's investigate the data-set a bit:
 ```{r}
 head(ames_workshop)
 ```
-From this alone, we can already gather some aspects of the data-set which are problematic. In the `Lot_Frontage` column we can see missing values. Additionally, we can already see that `Utilities` are contained as strings. These we cannot use in our linear model and would like the column to be a [`factor`](https://r4ds.had.co.nz/factors.html) instead. Let's use `recipe` in order to pre-process our data:
+We can already identify some aspects of the data-set that are problematic. In the `Lot_Frontage` column we can see missing values. Additionally, we can already see that the observations in `Utilities` are contained as strings. We cannot use these in our linear model and would like the column to be a [`factor`](https://r4ds.had.co.nz/factors.html) instead. Let's use `recipe` in order to pre-process our data:
 
 ```{r}
 rec <- recipe(ames_workshop) %>%
@@ -143,7 +144,7 @@ preped_recipe <- prep(rec, ames_workshop)
 
 What's going on here?
 
-1. We create a recipe concerned with the `ames_workshop` data-set, and will store the end-result in a variable called `rec`
+1. We create a recipe concerned with the `ames_workshop` data-set, and will store the end-result in a variable called `rec`.
 2. Inside of recipes, variables can have different [roles](https://recipes.tidymodels.org/articles/Roles.html). The most important ones are "outcome" and "predictor". These specify which variables are our independent ones inside of the model and what is the outcome that we want to predict. We could also specify a `formula` already at this time, but postpone this for later.
 3. After setting the appropriate roles, a recipe is a series of "steps" (see where the cooking analogy comes from? 🧑‍🍳). Each step is named after a common task when doing feature-engineering/pre-processing. You can find all available steps in [the documentation](https://recipes.tidymodels.org/reference/index.html). As the argument to each step, we need to specify the variables on which to perform the step (the ingredients! 😉). Here, the roles come in handy: `recipes` provides us with a set of functions which can be used to easily select the variables for a step, without the need to specify concrete variable names - this makes for easy code-reuse throughout different projects and make the code a bit more resistant towards name changes. We use the following steps in our recipe:
 
@@ -172,32 +173,33 @@ As we can see, the missing values in `Lot_Frontage` are gone and the `Utilities`
 Note also that we still have 16 variables - our predictors do not contain any highly correlated numerical columns! Remember - they would have been dropped otherwise by `step_corr`. 
 
 ## Sampling & bootstrapping
+Note that we only use a selection of all available splitting options provided by Rsample, you can consult [the documentation](https://rsample.tidymodels.org/reference/index.html) to explore alternative options. 
 
 ### Initial Split
 
-We first split the entire dataset into the training and testing dataset (see slide 8). For a split of 75-25% we use .75 as argument.
+We first split the entire data-set into the training and testing data-set (see slide 8). For a split of 75-25% we use .75 as argument.
 
 ```{r}
 ames_split <- rsample::initial_split(ames_workshop, prop = .75)
 ames_split
 ```
-We can see it partitioned the datset into training (2197 observations) and testing (733 observations). It also gives us the total amount, namely 2930.
+We can see `initial_split` partitioned the data-set into a training (2197 observations) and testing (733 observations) set. It also gives us the total amount, namely 2930.
 
 ### Training and testing
 
-We need one more step to have our training and testing dataset:  
+We need one more step to have our training and testing data-set:  
 
 ```{r}
 ames_train <- rsample::training(ames_split)
 ames_test <- rsample::testing(ames_split)
 ```
 
-Now we're ready to do some advanced splitting of our training dataset!
+Now we're ready to do some advanced splitting of our training data-set!
 
 
 ### Cross validation and V-Fold
 
-This example will focus on v-fold cross validation to further split our training set. Basically, we tell R to split our dataset x amount of times in two groups with a set size (without replacement).
+This example will focus on v-fold cross validation to further split our training set. Basically, we tell R to split our data-set x amount of times in two groups with a pre-determined size (without replacement).
 
 ```{r}
 ames_folds <- rsample::vfold_cv(ames_train, v = 5)
@@ -218,13 +220,13 @@ As you can see, we have now split the training set into 5 sets that consist of a
 
 ## Fitting a Model
 
-With our pre-processing done and equipped with multiple test and training-sets, we can finally get down to business and fit our model!
+With our pre-processing done and equipped with multiple analysis and assessment-sets, we can finally get down to business and fit our model!
 Remember, that our goal here is to predict `Sale_Price` using a linear regression model.
 
-Although we did not specify a concrete formula in the `recipe` above, the `recipe` already contained a lot of assumptions about how our model should look like. This is, because we already set the "predictor" and "outcome" roles, which determine on which side of our model's formula variables will occur (and which ones won't make an appearance at this time).
+Although we did not specify a concrete formula in the `recipe` above, the `recipe` already contains a lot of assumptions about what our model should look like. This is because we already set the "predictor" and "outcome" roles, which determine on which side of our model's formula the variables are placed (and which ones won't make an appearance at this time).
 
 As there are three rules for real estate valuation (location, location, and you guessed it, location), we decide to include the zoning in our model, which tells us whether a given house is inside of a residential area, close to industry plants, etc.
-Additionally, we will include the overall and exterior condition of the house and the overall size of the property. These all seem important for the valuation of a house. As we have sales from different years in our data-set, we'll also include the year of the sale. The general idea behind this is to reflect general swings in the real estate markets and economic developments like inflation.
+Additionally, we will include the overall and exterior condition of the house and the overall size of the property. These all seem important for the evaluation of a house. As we have sales from different years in our data-set, we will also include the year of the sale. The general idea behind this is to reflect general swings in real estate markets and economic developments like inflation.
 
 We use `parsnip` to denote our model in a headache-free, standardized way:
 
@@ -236,14 +238,14 @@ model <- linear_reg() %>%
 ```
 
 Due to the power of `parsnip`, we can simply specify that we want to use a linear regression model, specifically the implementation provided by `stat::lm()`. The different implementations are called "engines" by `parsnip`.
-Note, that we __use the training-set of our first split to train/fit the model!__.
+Note, that we __use the analysis-set of our first split to train/fit the model!__.
 
 ## Model evaluation
 
 Now, let's see how well our models perform:
 
 :::danger 
-⚠ To evaluate model performance, always use the __test__ set of the data-split!
+⚠ To evaluate model performance, always use the __assessment__ set of the data-split!
 :::
 
 ```{r}
@@ -318,7 +320,7 @@ mase(predictions, truth = Sale_Price, estimate = .pred)
 
 Because we had a sort of temporal component in our data, we could be interested to assess the effectiveness of the forecasting. This could be done through Mean Absolute Scaled Error (MASE), a measure for determining the effectiveness of forecasts generated by model by comparing the predictions with the output of a naïve forecasting approach. [link](https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968)
 
-Its value greater than one (1) indicates the algorithm is performing poorly compared to the naïve forecast. In our case, the value is not that dramatically high, but still leaves us with a slight anxiety and uncertainty.
+A value greater than one (1) indicates that the algorithm is performing poorly compared to the naive forecast. In our case, the value is not that dramatically high, but still leaves us with a slight anxiety and uncertainty.
 
 ---
 
@@ -404,6 +406,8 @@ ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
 
 ::: info
 __Note:__ It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
+
+Rsample allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
 :::
 
 ## Fitting the Model

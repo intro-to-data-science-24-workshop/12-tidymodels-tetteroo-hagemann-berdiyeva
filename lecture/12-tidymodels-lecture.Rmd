@@ -43,7 +43,7 @@ name: tidymodels
 
 # tidymodels
 - `tidymodels` is a __collection of packages__
-- each package is targeted at a specific part of the modelling process
+- Each package is targeted at a specific part of the modelling process
 
 <div align="center">
 <img src="pics/Tidymodels_flowchart.jpg" height=400>
@@ -132,10 +132,13 @@ Useful to split your data into __testing__ and __training__ subsets:
 
 ### Why do we care?
 
-- Model should explain the data, not memorize it
-- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters
+- Model should explain the data, not memorize it.
+- Having multiple splits allows us to construct and compare different models with different (combinations of) parameters.
 <!-- QUESTION: The following two points I do not understand - fitting the final model multiple times would not change the outcome, no? -->
-<!-- Does this in the end mean the same thing as the first point I sneakily added? -->
+<!-- Does this in the end mean the same thing as the first point I sneakily added?
+<!-- Basically the literature states that only one model may be used on our test set, so we construct multiple models in the subsamples to see which one we want to use on the test set. With regards to why we wouldn't just run multiple models on the training set: we want to see how well different models can explain 'new data' so we need multiple subsamples (w analysis and assessment to do this trick). Secondly, different model types/parameters may construct variables differently or 'play' with the data to fit the model optimally. If we were to do that on the same training dataset it becomes messy. So we want a clean slate for every new model we make. 
+Lastly: so yes the point you added summarizes my arguments on this slide. 
+-->
 - The final model is only used on the test set once, so we want to make sure that the final model is the best way of explaining the data.
   - If we run multiple models on the test set, we start to optimize our model to the test set instead of focusing on the model's general ability to explain the data-set.
 ]
@@ -152,6 +155,7 @@ Useful to split your data into __testing__ and __training__ subsets:
 
 .pull-left[
 - Initial split (__training__ vs __testing__)
+  - Stratification possible if the dataset includes a skewed variable.
 ```r
 initial_split(
     dataset,
@@ -160,7 +164,7 @@ initial_split(
 ```
 - Cross Validation and V-fold
 - Bootstraps
-- Rolling Forecast
+- Rolling Forecast Origin Resampling
 ]
 
 .pull-right[
@@ -178,7 +182,7 @@ initial_split(
   - The default is set to 10, this is still manageable but enough to produce robust results. 
 - Output is a `tibble` containing `lists`, each list contains information on how the data is split.
   - We can unpack the first column to get our analysis and assessment set. 
-- For more information and variants of cross validation check out: [Tidy Modelling with R Ch 10](https://www.tmwr.org/resampling).
+- For more information and variations of cross validation check out: [Tidy Modelling with R Ch 10](https://www.tmwr.org/resampling).
 ]
 
 .pull-right[
@@ -188,7 +192,7 @@ initial_split(
 </div>
 ]
 ---
-# Bootstrapping
+# Bootstraps
 
 .pull-left[
 - Analysis sets are sampled from data-set **with** replacement.
@@ -206,13 +210,14 @@ initial_split(
 </div>
 ]
 ---
-<!-- QUESTION: You are sure that you come out with the allotted time? This is the thing I would propose to cut out first to be honest; just as its the most advanced.... -->
+<!-- QUESTION: You are sure that you come out with the allotted time? This is the thing I would propose to cut out first to be honest; just as its the most advanced....
+<! Let's try and if it's too much we cut it out. Will def skip it during actual workshop -->
 # Rolling Forecasting Origing Resampling
 
 .pull-left[
 - If our data-set has a __temporal__ component, simply random sampling can disrupt the model in estimating patterns.
   - Solution:</br>
-  `fit_resamples(formula, resamples, ...)`
+  `rolling_origin`(initial = x, assess = y, skip = z, cumulative = FALSE)`
 - We set the size of the analysis and assessment sets. The first sample follows this division, the second iteration takes the same data size but shifts by a specified number. 
 ]
 
@@ -391,11 +396,12 @@ name: resources
 
 # Further Resources and Sources
 
-- 🌐 Website of the [`tidymodels`](https://www.tidymodels.org/) package, including documentation and guides
+- 🌐 Website of the [`tidymodels`](https://www.tidymodels.org/) package, including documentation, examples and guides
     - `tidymodels` consists of many more packages than we could cover in this session!
 - 📖 [Tidy Modelling with R](https://www.tmwr.org/)
 - 📺 [Get started with tidymodels and classification of penguin data by Julia Silge](https://www.youtube.com/watch?v=z57i2GVcdww)
 - 📺 [tidymodels: Adventures in Rewriting a Modeling Pipeline - posit::conf(2023)](https://www.youtube.com/watch?v=R7XNqcCZnLg)
 - 📜 [A Gentle Introduction to tidymodels](https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/)
 - 📜 [Tidymodels Ecosystem Tutorial](https://rpubs.com/chenx/tidymodels_tutorial)
+📜 [Holistic Tidymodels Tutorial](https://www.stepbystepdatascience.com/ml-with-tidymodels)
 
