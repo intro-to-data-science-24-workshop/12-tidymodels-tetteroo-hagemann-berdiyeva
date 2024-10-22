@@ -209,9 +209,7 @@ initial_split(
 </div>
 ]
 ---
-<!-- QUESTION: You are sure that you come out with the allotted time? This is the thing I would propose to cut out first to be honest; just as its the most advanced....
-<! Let's try and if it's too much we cut it out. Will def skip it during actual workshop -->
-# Rolling Forecasting Origing Resampling
+# Rolling Forecasting Origin Resampling
 
 .pull-left[
 - If our data-set has a __temporal__ component, simply random sampling can disrupt the model in estimating patterns.
