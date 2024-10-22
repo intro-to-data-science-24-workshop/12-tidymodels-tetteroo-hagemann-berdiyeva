@@ -4,7 +4,7 @@
     <title>Introduction to Data Science - Workshop 2024</title>
     <meta charset="utf-8" />
     <meta name="author" content="Franka Tetteroo, Linus Hagemann &amp; Sofiya Berdiyeva" />
-    <script src="libs/header-attrs-2.20/header-attrs.js"></script>
+    <script src="libs/header-attrs-2.28/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
@@ -227,8 +227,14 @@ initial_split(
 
 .pull-left[
 - If our data-set has a __temporal__ component, simply random sampling can disrupt the model in estimating patterns.
-  - Solution:&lt;/br&gt;
-  `rolling_origin`(initial = x, assess = y, skip = z, cumulative = FALSE)`
+  - Solution:
+  ```r
+  rolling_origin(
+      initial = x,
+      assess = y,
+      skip = z,
+      cumulative = FALSE)
+    ```
 - We set the size of the analysis and assessment sets. The first sample follows this division, the second iteration takes the same data size but shifts by a specified number. 
 ]
 
@@ -281,7 +287,7 @@ ml_linear_regression(x, formula = NULL, fit_intercept = TRUE, [...], standardiza
 .pull-right[
 - __`parsnip` to the rescue__!
 
-&lt;img src="pics/parsnip_logo.png" height=300&gt;
+&lt;img style="position: absolute; top: 35%;" src="pics/parsnip_logo.png" height=300&gt;
 ]
 ---
 # parsnip
@@ -408,7 +414,7 @@ name: resources
 - 📺 [tidymodels: Adventures in Rewriting a Modeling Pipeline - posit::conf(2023)](https://www.youtube.com/watch?v=R7XNqcCZnLg)
 - 📜 [A Gentle Introduction to tidymodels](https://rviews.rstudio.com/2019/06/19/a-gentle-intro-to-tidymodels/)
 - 📜 [Tidymodels Ecosystem Tutorial](https://rpubs.com/chenx/tidymodels_tutorial)
-📜 [Holistic Tidymodels Tutorial](https://www.stepbystepdatascience.com/ml-with-tidymodels)
+- 📜 [Holistic Tidymodels Tutorial](https://www.stepbystepdatascience.com/ml-with-tidymodels)
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
