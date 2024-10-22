@@ -55,6 +55,6 @@ The material in this repository is made available under the [MIT license](http:/
 
 **Linus Hagemann** prepared the `recipes` and `parsnip` packages' introduction. He also edited the recording and provided a strong support with Github repository maintenance.
 
-**Sofiya Berdiyeva** prepared the description of `yardstick` package.
+**Sofiya Berdiyeva** prepared the description of the `yardstick` package.
 
 All of the authors have also prepared the labs materials, including code example and exercises, respective to their sub-theme from the presentation.
