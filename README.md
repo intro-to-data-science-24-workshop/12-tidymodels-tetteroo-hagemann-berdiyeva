@@ -51,7 +51,7 @@ The material in this repository is made available under the [MIT license](http:/
 
 ## Statement of contributions
 
-**Franka Tetteroo** prepared a brief overview of the whole tidymodels package and introduced the `rsample` package along with different dataset splitting techniques.
+**Franka Tetteroo** prepared a brief overview of the whole tidymodels package and introduced the `rsample` package along with different dataset sampling techniques.
 
 **Linus Hagemann** prepared the `recipes` and `parsnip` packages' introduction. He also edited the recording and provided a strong support with Github repository maintenance.
 
