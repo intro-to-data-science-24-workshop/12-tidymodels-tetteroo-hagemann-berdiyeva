@@ -68,7 +68,7 @@ We will cover:
 - fitting a model using `parsnip`,
 - and finally evaluate the performance of the model using `yardstick`.
 
-For those of you attending this session live - stay tuned, as __there will be a price to be won in the end__!
+For those of you attending this session live - stay tuned, as __there will be a prize to be won in the end__!
 
 ![](./attendance_price.jpg)
 
@@ -467,5 +467,8 @@ metrics(data= predictions_lm, truth = Sale_Price, estimate = .pred)
 
 # Sources
 
+De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing Data as an End of Semester Regression Project. Journal of Statistics Education, 19(3). https://doi.org/10.1080/10691898.2011.11889627
+
 Toropova, A. P., & Toropov, A. A. (2017). The index of ideality of correlation: A criterion of predictability of QSAR models for skin permeability? Science of The Total Environment, 586, 466–472. https://doi.org/10.1016/j.scitotenv.2017.01.198
 
+Ahuja, A. (2021, January 11). Mean Absolute Scaled Error (MASE) in Forecasting. Medium. https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968
