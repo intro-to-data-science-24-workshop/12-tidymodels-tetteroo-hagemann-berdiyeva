@@ -380,34 +380,42 @@ ames_test_ex <- rsample::testing(ames_split_ex)
 Bootstrapping is the second method we can use to split our training set. This time we sample from the training set __with replacement__ until we get a set including the number of rows as the original data set. The unused observations are then put in the assessment set. For more info, see slide 10. 
 :::
 
-- Use the `rsample::bootstraps` function to split the data-set __3__ times. 
-
+- 1: Use the `rsample::bootstraps` function to split the data-set __3__ times. 
 ::: info
 Note: where `vfold_cv` uses `v = xì`, bootstraps employs `times = x`.
 :::
 
-- Extract the analysis sets.
+- 2: If you have sufficient time, extract and inspect the first analysis and assessment set. How many observations do you expect in the analysis set?
+:::info
+Note that that bootstraps results in a tibble with two columns: column 1 contains lists. Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID. These become more important when working with a large number of bootstrap samples.
+:::
 
 ```{r}
-# This gives us a tibble with two columns: column 1 contains lists:
-# Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID.
-# These become more important when working with a large number of bootstrap samples.
+#1: Bootstraps: 
+#Your code here
+
+#Solution 1:
 ames_bootstrap_ex <- rsample::bootstraps(ames_train_ex, times = 3)
 ames_bootstrap_ex
 
-# This part is not strictly necessary in order to proceed. Make sure to think about at some time, though. 🙂
-# Inspect the first bootstrap sample. How many observations do you expect in the analysis set?
+# 2: Inspect the analysis and assessment set:
 ames_bootstrap_analysis <- # YOUR CODE HERE
 ames_bootstrap_assessment <- # YOUR CODE HERE
-# !!! SOLUTION !!! 
+#Solution 2: 
 ames_bootstrap_analysis <- ames_bootstrap_ex$splits[[1]] %>% analysis()
 ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
 ```
 
 ::: info
-__Note:__ It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
+It is possible to run different models on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
 
-Rsample allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
+If you are interested in exploring this topic further and running multiple models, we suggest the following resources :
+- Blogpost: Machine learning in R with tidymodels, subheading: Training Models.         (https://www.stepbystepdatascience.com/ml-with-tidymodels).
+-  Chapter 11 Comparing Models with Resampling from the textbook Tidy Modelling with     R (https://www.tmwr.org/).
+- Blogpost: Hayes, A., Predictive performance via bootstrap variants.                   (https://www.alexpghayes.com/post/2018-05-03_performance-assessments-via-bootstr       ap-variants/)
+- Research paper: Silverman, B.W., Chan, L. & Vincent, K. Bootstrapping multiple        systems estimates to account for model selection. Stat Comput 34, 44 (2024).        https://doi.org/10.1007/s11222-023-10346-9
+
+Additionally, Rsample allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
 :::
 
 ## Fitting the Model
@@ -472,3 +480,10 @@ De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing Data as an End
 Toropova, A. P., & Toropov, A. A. (2017). The index of ideality of correlation: A criterion of predictability of QSAR models for skin permeability? Science of The Total Environment, 586, 466–472. https://doi.org/10.1016/j.scitotenv.2017.01.198
 
 Ahuja, A. (2021, January 11). Mean Absolute Scaled Error (MASE) in Forecasting. Medium. https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968
+
+Bootstrap resampling and tidy regression models. https://www.tidymodels.org/learn/statistics/bootstrap/
+
+
+
+
+
