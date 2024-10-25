@@ -6,9 +6,9 @@ This repository provides materials for a session that is part of the [I2DS Tools
 
 ### Session contents
 
-This session will introduce you to the powerful `tidymodels` framework in R, which streamlines the modeling process in data science.
+This session will introduce you to the powerful `tidymodels` framework in `R`, which streamlines the modeling process in data science.
 
-We'll begin by exploring `recipes`, a package that simplifies the preprocessing of data.
+We'll begin by exploring `recipes`, a package that simplifies the pre-processing and feature-engineering of data.
 
 Next, we will dive into `rsample`, which provides robust tools for data splitting and offers several distinct sampling strategies (we will discuss v-fold cross-validation, bootstrapping and rolling forecasting origin methods).
 
@@ -25,12 +25,15 @@ The goals of this session are to (1) equip you with conceptual knowledge about t
 
 The session is accompanied by a tutorial, which can be accessed [here](https://github.com/intro-to-data-science-24-workshop/12-tidymodels-tetteroo-hagemann-berdiyeva/blob/main/lab/12-tidymodels-lab.html).
 
+> [!IMPORTANT]  
+> If you are planning on attending the live-session of the workshop, please make sure to have the practice material ready before the session.
+
 
 ## Instructors
 
-- Franka Tetteroo ([website](https://github.com/FMTetteroo))
-- Linus Hagemann ([website](https://github.com/linusha))
-- Sofiya Berdiyeva ([website](https://github.com/sophiyaberdiyeva))
+- Franka Tetteroo ([GitHub](https://github.com/FMTetteroo))
+- Linus Hagemann ([GitHub](https://github.com/linusha))
+- Sofiya Berdiyeva ([GitHub](https://github.com/sophiyaberdiyeva))
 
 
 ## Further resources
@@ -47,14 +50,14 @@ The session is accompanied by a tutorial, which can be accessed [here](https://g
 
 ## License
 
-The material in this repository is made available under the [MIT license](http://opensource.org/licenses/mit-license.php). 
+Our code and practice materials are made available under the [MIT license](http://opensource.org/licenses/mit-license.php). 
 
 ## Statement of contributions
 
-**Franka Tetteroo** prepared a brief overview of the whole tidymodels package and introduced the `rsample` package along with different dataset sampling techniques.
+**Franka Tetteroo** prepared a brief overview of the whole `tidymodels` package and introduced the `rsample` package along with different sampling techniques.
 
-**Linus Hagemann** prepared the `recipes` and `parsnip` packages' introduction. He also edited the recording and provided a strong support with Github repository maintenance.
+**Linus Hagemann** prepared the `recipes` and `parsnip` packages' introduction. He also edited the recording and provided strong support with git-repository maintenance.
 
 **Sofiya Berdiyeva** prepared the description of the `yardstick` package.
 
-All of the authors have also prepared the labs materials, including code example and exercises, respective to their sub-theme from the presentation.
+All of the authors have also prepared the lab materials, including code example and exercises, respective to their sub-theme from the presentation.
