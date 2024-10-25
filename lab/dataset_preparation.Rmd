@@ -2,6 +2,7 @@
 library(tidymodels)
 library(wakefield)
 ```
+This notebook contains code used to create the "dirty" version of the data-set for the workshop session, as well as some boiler-plate code to make sure that the resulting data-set is suitable for our purposes. Usually, you do not need to be concerned with the contents of this notebook! 
 
 Documentation about the data set can be found [here](https://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
 
@@ -16,6 +17,7 @@ ames_workshop <- ames |>
 ames_workshop$secret_sauce <- ames_workshop$Lot_Frontage
 # remove some variables to have NA in there, these are numeric, in order to impute them later
 r_na(x = ames_workshop, cols = c(2,3), prob = .1) -> ames_workshop
+# remove some seldomly used factors in order to avoid problems when splitting the data-set
 ames_workshop |>
     filter(MS_Zoning != 'A_agr' | MS_Zoning != 'C_all' | MS_Zoning != 'I_all')
 ```

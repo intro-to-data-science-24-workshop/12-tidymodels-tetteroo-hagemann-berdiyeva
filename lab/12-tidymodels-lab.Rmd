@@ -68,16 +68,16 @@ We will cover:
 - fitting a model using `parsnip`,
 - and finally evaluate the performance of the model using `yardstick`.
 
-For those of you attending this session live - stay tuned, as __there will be a prize to be won in the end__!
+For those of you attending this session live - stay tuned, as __there will be a price to be won in the end__!
 
 ![](./attendance_price.jpg)
 
 ::: danger
-⚠️ __Attention__
+⚠️️ __Attention__
 
 Modelling is an extremely complex topic. Choosing an appropriate model for a specific task requires theoretical deliberation and careful consideration of the data at hand. As we have seen in the lecture, hand-picking specific model configurations can rightfully be criticized and requires justification grounded in theory.
 
-All of these are outside of the scope of this workshop - we aim at giving you a glimpse on how to use three selected `R` packages that we deem interesting and useful. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
+All of these considerations are outside of the scope of this workshop - we aim at giving you a glimpse on how to use the selected `R` packages that we deem interesting and useful. Doing so in a very condensed fashion requires us to take some shortcuts and trade-offs. Please be mindful of this when consulting this material for your future modelling adventures - there's a lot of more to think about!
 :::
 
 # Our Dataset
@@ -87,6 +87,7 @@ Throughout this exercise, we are working with a specially prepared version of th
 ```{r}
 # install.packages("tidymodels")
 library(tidymodels)
+library(tidyverse)
 set.seed(42)
 
 load("ames_workshop.RData") # executing this line will lead to the `ames_workshop` df becoming available in your environment
@@ -116,13 +117,13 @@ The following table gives you a quick overview of the available features (in the
 | Sale_Price   | Sale price \$$                                                    |
 | secret_sauce | A special feature just for you! Can this improve our predictions? |
 
-Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task! 
+Our goal in this session is to predict the `Sale_Price` of a house based on the other available data-points. For this, we will build a linear model. You can already start to think about which features you think would be most useful for this task!
 
 # The Modelling Process with `tidymodels`
 
 ## Feature Egineering
 
-First, we need to pre-process our data in order to make it suitable for use inside of a model. Remember, that each type of model has some requirements on the data, which are grounded in theory. __We will not focus too much on this here. This means this guide is really just concerned with how to do the modelling process with `tidymodels`. Thus, the modelling itself is not extremely solid.__
+First, we need to pre-process our data in order to make it suitable for modelling. Remember, that each type of model has some requirements on the data, which are grounded in theory. __We will not focus too much on this here. This means this guide is really just concerned with how to do the modelling process with `tidymodels`. Thus, the modelling itself is not extremely solid.__
 
 Let's investigate the data-set a bit:
 
@@ -162,7 +163,7 @@ At this point, we have not yet changed the original data-set, but just made the 
 ames_workshop <- bake(preped_recipe, ames_workshop)
 ```
 
-`bake` is the final step in applying our recipe to our actual data-set. Usually, it would be good idea to __not overwrite__ your original data-set, so that you have an easier time to compare the data before and after pre-processing. We opted to this here for the sake of clearness.
+`bake` is the final step in applying our recipe to our actual data-set. Usually, it would be good idea to __not overwrite__ your original data-set, so that you have an easier time to compare the data before and after pre-processing. We opted to do this here for the sake of clearness.
 
 Now, let's roughly check how the data looks now:
 
@@ -172,12 +173,15 @@ head(ames_workshop)
 As we can see, the missing values in `Lot_Frontage` are gone and the `Utilities` column is now coded as a `factor`.
 Note also that we still have 16 variables - our predictors do not contain any highly correlated numerical columns! Remember - they would have been dropped otherwise by `step_corr`. 
 
-## Sampling & bootstrapping
-Note that we only use a selection of all available splitting options provided by Rsample, you can consult [the documentation](https://rsample.tidymodels.org/reference/index.html) to explore alternative options. 
+## Sampling & Bootstrapping
+
+::: info
+Note that we only use a selection of all available splitting options provided by `rsample`, you can consult [the documentation](https://rsample.tidymodels.org/reference/index.html) to explore alternative options. 
+:::
 
 ### Initial Split
 
-We first split the entire data-set into the training and testing data-set (see slide 8). For a split of 75-25% we use .75 as argument.
+We first split the entire data-set into the training and testing data-set (see slide 8). For a split of 75-25% we use `.75` as argument.
 
 ```{r}
 ames_split <- rsample::initial_split(ames_workshop, prop = .75)
@@ -196,7 +200,6 @@ ames_test <- rsample::testing(ames_split)
 
 Now we're ready to do some advanced splitting of our training data-set!
 
-
 ### Cross validation and V-Fold
 
 This example will focus on v-fold cross validation to further split our training set. Basically, we tell R to split our data-set x amount of times in two groups with a pre-determined size (without replacement).
@@ -212,16 +215,16 @@ ames_folds$splits[[1]] %>% analysis() %>% dim()
 ames_folds$splits[[1]] %>% analysis()
 ```
 
-As you can see, we have now split the training set into 5 sets that consist of an analysis and assessment set. The analysis sets are used to run one or multiple models on, the assessment set acts as a test set to see how well the models explain new data. During research, we can use these various analysis and assessment sets to compare different models and see which one we want to run on our test set. Since we can only run one model on the test set, we need to be confident in the performance of our final model.
+As you can see, we have now split the training set into 5 sets that consist of an analysis and assessment set each. The analysis sets are used to run one or multiple models on, the assessment set acts as a test set to see how well the models explain new data. During research, we can use these various analysis and assessment sets to compare different models and see which one we want to run on our test set. Since we can only run one model on the test set, we need to be confident in the performance of our final model.
 
 ::: danger
-⚠️ Important: The models need to be run on the analysis sets of the ` ames_fold`s tibble :) 
+__Important:__ The models need to be run on the analysis sets of the ` ames_fold`s tibble 🙂
 :::
 
 ## Fitting a Model
 
 With our pre-processing done and equipped with multiple analysis and assessment-sets, we can finally get down to business and fit our model!
-Remember, that our goal here is to predict `Sale_Price` using a linear regression model.
+__Remember, that our goal here is to predict `Sale_Price` using a linear regression model.__
 
 Although we did not specify a concrete formula in the `recipe` above, the `recipe` already contains a lot of assumptions about what our model should look like. This is because we already set the "predictor" and "outcome" roles, which determine on which side of our model's formula the variables are placed (and which ones won't make an appearance at this time).
 
@@ -233,7 +236,8 @@ We use `parsnip` to denote our model in a headache-free, standardized way:
 ```{r}
 model <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold, 
+  fit(Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold,
+      # only use one of the splits available here, for the sake of clearness
       data = ames_folds$splits[[1]] %>% analysis())
 ```
 
@@ -245,11 +249,10 @@ Note, that we __use the analysis-set of our first split to train/fit the model!_
 Now, let's see how well our models perform:
 
 :::danger 
-⚠ To evaluate model performance, always use the __assessment__ set of the data-split!
+To evaluate model performance, always use the __assessment__ set of the data-split!
 :::
 
 ```{r}
-# parsnip model ALWAYS returns the results as a data frame
 test_set <- ames_folds$splits[[1]] %>% assessment()
 
 predictions <- bind_cols(
@@ -261,7 +264,7 @@ predictions <- bind_cols(
 ### And here comes yardstick
 
 When "truth" is a factor (by classification), `metrics()` returns accuracy and the Kappa.
-When "truth" is numeric (regression task), we get RMSE, R squared and MAE by default.
+__When "truth" is numeric (regression task), we get RMSE, R squared and MAE by default.__
 
 ```{r}
 # Estimate one or more common performance estimates depending on the class of truth 
@@ -326,8 +329,12 @@ A value greater than one (1) indicates that the algorithm is performing poorly c
 
 # Exercise
 
+Now, it's time to play around with what you learned for yourself! We prepared boiler-plate code for you, which has gaps that need to be filled! The code from the full example above might be of help. Additionally, there exists a separate version of this file, that contains an example solution - although there are of course many different solutions possible!
+
 ::: info 
 Remember - the goal of this exercise is to build a well-performing model predicting the `Sale_Price` of a house.
+
+__Starting as of now - you should be inside of RStudio or your IDE of choice!__
 :::
 
 ## Loading and Tranforming the Data with `recipe`
@@ -359,8 +366,8 @@ ames_workshop_baked <- bake(preped_recipe, ames_workshop)
 ### Initial Split
 
 - Split the transformed data-set into a training and testing set.
-- Use a proportion of .8.
-- Extract the training and testing dataset from the initial split set. 
+- Use a proportion of `.8`.
+- Extract the training and testing data-set from the initial split set. 
 
 ```{r}
 # YOUR CODE HERE
@@ -380,45 +387,42 @@ ames_test_ex <- rsample::testing(ames_split_ex)
 Bootstrapping is the second method we can use to split our training set. This time we sample from the training set __with replacement__ until we get a set including the number of rows as the original data set. The unused observations are then put in the assessment set. For more info, see slide 10. 
 :::
 
-- 1: Use the `rsample::bootstraps` function to split the data-set __3__ times. 
+- Use the `rsample::bootstraps` function to split the data-set __3__ times. 
+
 ::: info
 Note: where `vfold_cv` uses `v = xì`, bootstraps employs `times = x`.
 :::
 
-- 2: If you have sufficient time, extract and inspect the first analysis and assessment set. How many observations do you expect in the analysis set?
-:::info
-Note that that bootstraps results in a tibble with two columns: column 1 contains lists. Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID. These become more important when working with a large number of bootstrap samples.
-:::
+- Extract the analysis sets.
 
 ```{r}
-#1: Bootstraps: 
-#Your code here
-
-#Solution 1:
+# This gives us a tibble with two columns: column 1 contains lists:
+# Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID.
+# These become more important when working with a large number of bootstrap samples.
 ames_bootstrap_ex <- rsample::bootstraps(ames_train_ex, times = 3)
 ames_bootstrap_ex
 
-# 2: Inspect the analysis and assessment set:
+# This part is not strictly necessary in order to proceed. Make sure to think about at some time, though. 🙂
+# Inspect the first bootstrap sample. How many observations do you expect in the analysis set?
 ames_bootstrap_analysis <- # YOUR CODE HERE
 ames_bootstrap_assessment <- # YOUR CODE HERE
-#Solution 2: 
+# !!! SOLUTION !!! 
 ames_bootstrap_analysis <- ames_bootstrap_ex$splits[[1]] %>% analysis()
 ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
 ```
 
 ::: info
-It is possible to run different models on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
+__Note:__ It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
 
-If you are interested in exploring this topic further and running multiple models, we suggest the following resources :
-- Blogpost: Machine learning in R with tidymodels, subheading: Training Models.         (https://www.stepbystepdatascience.com/ml-with-tidymodels).
--  Chapter 11 Comparing Models with Resampling from the textbook Tidy Modelling with     R (https://www.tmwr.org/).
-- Blogpost: Hayes, A., Predictive performance via bootstrap variants.                   (https://www.alexpghayes.com/post/2018-05-03_performance-assessments-via-bootstr       ap-variants/)
-- Research paper: Silverman, B.W., Chan, L. & Vincent, K. Bootstrapping multiple        systems estimates to account for model selection. Stat Comput 34, 44 (2024).        https://doi.org/10.1007/s11222-023-10346-9
-
-Additionally, Rsample allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
+`rsample` allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
 :::
 
 ## Fitting the Model
+
+:::info
+Just to give you a glimpse of how one would go about actually utilizing the power of our splits, we will fit (the same) model here on all our splits. For this, we provide you with a function that fits a model on the analysis set of a split.
+Functional programming then allows us to fit this model on all our splits.
+:::
 
 ```{r}
 # TODO: Explanation
@@ -473,17 +477,24 @@ metrics(data= predictions_lm, truth = Sale_Price, estimate = .pred)
 
 ---
 
+# What next?
+
+As we pointed out multiple times, the contents of this workshop only provide you with a glimpse of the possibilities `tidymodels` provides. Some things that you might want to consider from this point on:
+
+- Try to adapt the code you have written here in order to actually fit different models on one of the splits you have created throughout the exercise.
+- Take a more in-depth look at the data we provided you and understand why our pre-processing recipe looks the way it does. (_Hint_: Take a look at `secret_sauce` and `step_corr`)
+- Check out the full list of models supported by `parsnip` and try to fit a different type of model. A decision tree might be a good starting point, depending on your previous exposure to different modelling techniques. Pay attention to how little the actual modelling code needs to change!
+
+For the sake of ease, we provided you with a "dirty" version of the `ames`data-set for this workshop. Using the `modeldata` package, you can get a cleaner and larger version of the data:
+
+- Consult the data and try to derive a recipe that emphasizes  feature-engineering over pre-processing.
+- Using the full data-set, try to build a very well performing linear model. Build on what you learned here and in the lecture. There are many different blog-posts and similar on the web from people who did the same, that might serve as an inspiration or some form of "solution". One example can be found [here](https://www.benjamindornel.com/ames-regression.html) (_Note:_ The blog-post is written in python, but makes good theoretical deliberations). Another exemplary post using R is [here](https://www.kaggle.com/code/katlidakis95/ames-housing-notebook-with-r). [__THE BOOK__](https://www.tmwr.org/) on modelling using `tidymodels` also uses the `ames` data-set a lot.
+
+---
+
 # Sources
 
-De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing Data as an End of Semester Regression Project. Journal of Statistics Education, 19(3). https://doi.org/10.1080/10691898.2011.11889627
+For a full list of references we used, please consult the slide deck accompanying this session.
 
 Toropova, A. P., & Toropov, A. A. (2017). The index of ideality of correlation: A criterion of predictability of QSAR models for skin permeability? Science of The Total Environment, 586, 466–472. https://doi.org/10.1016/j.scitotenv.2017.01.198
-
-Ahuja, A. (2021, January 11). Mean Absolute Scaled Error (MASE) in Forecasting. Medium. https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968
-
-Bootstrap resampling and tidy regression models. https://www.tidymodels.org/learn/statistics/bootstrap/
-
-
-
-
 

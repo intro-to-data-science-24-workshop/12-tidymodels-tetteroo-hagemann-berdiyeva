@@ -26,7 +26,7 @@ The goals of this session are to (1) equip you with conceptual knowledge about t
 The session is accompanied by a tutorial, which can be accessed [here](https://github.com/intro-to-data-science-24-workshop/12-tidymodels-tetteroo-hagemann-berdiyeva/blob/main/lab/12-tidymodels-lab.html).
 
 > [!IMPORTANT]  
-> If you are planning on attending the live-session of the workshop, please make sure to have the practice material ready before the session.
+> If you are planning on attending the live-session of the workshop, please make sure to have the practice material ready before the session. In the best case, you will also make sure to install the `tidymodels` package before the beginning of the session.
 
 
 ## Instructors
