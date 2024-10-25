@@ -47,8 +47,7 @@ background-color: #2f1a61;
 }
 
 div.danger {background-color:#c42d2d; color:white; border-radius: 5px; padding: 20px;}
-div.further {background-color:#7CB9E8; color:white; border-radius: 5px; padding: 20px;}
-div.info {background-color:#66FF99; color:black; border-radius: 5px; padding: 20px;}
+div.info {background-color:#ACE1AF; color:black; border-radius: 5px; padding: 20px;}
 
 </style>
 ```
@@ -339,14 +338,12 @@ __Starting as of now - you should be inside of RStudio or your IDE of choice!__
 
 ## Loading and Tranforming the Data with `recipe`
 
-```{r}
+```{r eval=FALSE}
 # Let's start from a clean slate and load the data-set anew!
 load("ames_workshop.RData")
 rec <- recipe(ames_workshop) %>%
   update_role(c(
     # YOUR PREDICTORS HERE
-    # !!! SOLUTION JUST TO RUN THE CODE !!!
-    MS_Zoning, Lot_Area, Overall_Cond, Exter_Cond, Year_Sold
   ), new_role = "predictor") %>%
   update_role(Sale_Price, new_role = "outcome") %>%
   # Feel free to play around with these and/or add new steps!
@@ -357,8 +354,6 @@ rec <- recipe(ames_workshop) %>%
   step_corr(all_numeric_predictors())
 preped_recipe <- prep(rec, ames_workshop)
 # ames_workshop_baked <- # YOUR CODE TO APPLY THE PREPROCESSING HERE 
-# !!! SOLUTION !!!
-ames_workshop_baked <- bake(preped_recipe, ames_workshop)
 ```
 
 ## Sampling & Bootstrapping
@@ -369,16 +364,9 @@ ames_workshop_baked <- bake(preped_recipe, ames_workshop)
 - Use a proportion of `.8`.
 - Extract the training and testing data-set from the initial split set. 
 
-```{r}
-# YOUR CODE HERE
-
-#answer: 
-ames_split_ex <- rsample::initial_split(ames_workshop_baked, prop = .8)
-ames_split_ex
-
-ames_train_ex <- rsample::training(ames_split_ex)
-ames_test_ex <- rsample::testing(ames_split_ex)
-
+```{r eval=FALSE}
+ames_split_ex <- # YOUR CODE HERE
+ames_train_ex <- # YOUR CODE HERE
 ```
 
 ### Bootstrapping
@@ -395,7 +383,7 @@ Note: where `vfold_cv` uses `v = xì`, bootstraps employs `times = x`.
 
 - Extract the analysis sets.
 
-```{r}
+```{r eval=FALSE}
 # This gives us a tibble with two columns: column 1 contains lists:
 # Each list then contains an analysis and assessment set. The second column gives us the bootstrap ID.
 # These become more important when working with a large number of bootstrap samples.
@@ -406,9 +394,6 @@ ames_bootstrap_ex
 # Inspect the first bootstrap sample. How many observations do you expect in the analysis set?
 ames_bootstrap_analysis <- # YOUR CODE HERE
 ames_bootstrap_assessment <- # YOUR CODE HERE
-# !!! SOLUTION !!! 
-ames_bootstrap_analysis <- ames_bootstrap_ex$splits[[1]] %>% analysis()
-ames_bootstrap_assessment <- ames_bootstrap_ex$splits[[1]] %>% assessment()
 ```
 
 ::: info
@@ -424,19 +409,16 @@ Just to give you a glimpse of how one would go about actually utilizing the powe
 Functional programming then allows us to fit this model on all our splits.
 :::
 
-```{r}
-# TODO: Explanation
-# TODO: remove example code here and put placeholders for solution
+```{r eval=FALSE}
 fit_lm_bootstrap <- function(split) {
   linear_reg() %>%
   set_engine("lm") %>%
   fit(
-    Sale_Price ~ MS_Zoning + Lot_Area + Overall_Cond + Exter_Cond + Year_Sold, 
-      data = analysis(split))
+    Sale_Price ~# YOUR MODEL FORMULA HERE
+      ,data = analysis(split))
 }
 
-# I propose to keep this code, otherwise its really hard. Time is extremely short as is...
-#Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.
+# Mapping splits column (containing list of all bootstrap samples (both analysis and assessment sets)) on model above.
 boot_ames_models <-
   ames_bootstrap_ex %>% 
   mutate(model = map(splits, fit_lm_bootstrap),
@@ -451,28 +433,28 @@ Make sure to fit the models on the test-sets first and then use performance metr
 
 
 ```{r eval=FALSE}
+# Note, we are back to evaluating only one model again!
+# For some additional exercise: Think about how the adapt the functional approach from here to not only fit different models/models on different data but also evaluate them in an efficient way. 
 model_to_evaluate <- boot_ames_models[1,]$model[[1]]
+
 predictions_lm <- bind_cols(
  select(ames_test_ex, Sale_Price),
  predict(model_to_evaluate, ames_test_ex)
 )
 
-# TODO: remove code comments, probably extract chunk to one to evaluate and one to not evaluate
-# in order to not kill the knitting
-
 # One or more common performance estimates
-# metrics(
-#   data = # YOUR CODE HERE
-#   , truth = # YOUR CODE HERE
-#   , estimate = # YOUR CODE HERE
-#   )
-# !!! SOLUTION !!!
-metrics(data= predictions_lm, truth = Sale_Price, estimate = .pred)
+metrics(
+ data = # YOUR CODE HERE
+ , truth = # YOUR CODE HERE
+ , estimate = # YOUR CODE HERE
+)
+```
 
+Now, for our precious price:
+
+```{r}
 # Calculate the coefficient of determination (the traditional one)
-# Who has the highest value?
-
-# Answer: rsq_trad(predictions_lm, truth = Sale_Price, estimate = .pred)
+# __Who has the highest value?__
 ```
 
 ---
