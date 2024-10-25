@@ -67,9 +67,9 @@ We will cover:
 - fitting a model using `parsnip`,
 - and finally evaluate the performance of the model using `yardstick`.
 
-For those of you attending this session live - stay tuned, as __there will be a price to be won in the end__!
+For those of you attending this session live - stay tuned, as __there will be a prize to be won in the end__!
 
-![](./attendance_price.jpg)
+![](./attendance_prize.jpg)
 
 ::: danger
 ⚠️️ __Attention__
@@ -450,7 +450,7 @@ metrics(
 )
 ```
 
-Now, for our precious price:
+Now, for our precious prize:
 
 ```{r}
 # Calculate the coefficient of determination (the traditional one)
