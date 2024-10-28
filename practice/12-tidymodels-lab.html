@@ -2126,7 +2126,8 @@ IDE of choice!</strong></p>
 set.</li>
 </ul>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>ames_split_ex <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>ames_train_ex <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span></code></pre></div>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>ames_train_ex <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>ames_test_ex <span class="ot">&lt;-</span> <span class="co"># YOUR CODE HERE</span></span></code></pre></div>
 </div>
 <div id="bootstrapping" class="section level3">
 <h3>Bootstrapping</h3>
@@ -2163,9 +2164,18 @@ bootstraps employs <code>times = x</code>.</p>
 different modelling decisions on the various analysis sets to see how
 well different models can explain the data, but for simplicity’s sake,
 we’re keeping it to one model here!</p>
-<p><code>rsample</code> allows us to calculate confidence intervals for
-models on bootstrap samples. Unfortunately, this is outside of the scope
-for this workshop, but the following <a href="https://rsample.tidymodels.org/articles/Applications/Intervals.html">article</a>
+<p>If you are interested in exploring this topic further and running
+multiple models, we suggest the following resources : - Blogpost:
+Machine learning in R with tidymodels, subheading: Training Models. (<a href="https://www.stepbystepdatascience.com/ml-with-tidymodels" class="uri">https://www.stepbystepdatascience.com/ml-with-tidymodels</a>).
+- Chapter 11 Comparing Models with Resampling from the textbook Tidy
+Modelling with R (<a href="https://www.tmwr.org/" class="uri">https://www.tmwr.org/</a>). - Blogpost: Hayes, A.,
+Predictive performance via bootstrap variants. (<a href="https://www.alexpghayes.com/post/2018-05-03_performance-assessments-via-bootstrap-variants/" class="uri">https://www.alexpghayes.com/post/2018-05-03_performance-assessments-via-bootstrap-variants/</a>)
+- Research paper: Silverman, B.W., Chan, L. &amp; Vincent, K.
+Bootstrapping multiple systems estimates to account for model selection.
+Stat Comput 34, 44 (2024). <a href="https://doi.org/10.1007/s11222-023-10346-9" class="uri">https://doi.org/10.1007/s11222-023-10346-9</a></p>
+<p>Additionally, <code>rsample</code> allows us to calculate confidence
+intervals for models on bootstrap samples. Unfortunately, this is
+outside of the scope for this workshop, but the following <a href="https://rsample.tidymodels.org/articles/Applications/Intervals.html">article</a>
 presents an interesting deep-dive into the topic.</p>
 </div>
 </div>
@@ -2267,6 +2277,15 @@ accompanying this session.</p>
 <p>Toropova, A. P., &amp; Toropov, A. A. (2017). The index of ideality
 of correlation: A criterion of predictability of QSAR models for skin
 permeability? Science of The Total Environment, 586, 466–472. <a href="https://doi.org/10.1016/j.scitotenv.2017.01.198" class="uri">https://doi.org/10.1016/j.scitotenv.2017.01.198</a></p>
+<p>De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing
+Data as an End of Semester Regression Project. Journal of Statistics
+Education, 19(3). <a href="https://doi.org/10.1080/10691898.2011.11889627" class="uri">https://doi.org/10.1080/10691898.2011.11889627</a></p>
+<p>Toropova, A. P., &amp; Toropov, A. A. (2017). The index of ideality
+of correlation: A criterion of predictability of QSAR models for skin
+permeability? Science of The Total Environment, 586, 466–472. <a href="https://doi.org/10.1016/j.scitotenv.2017.01.198" class="uri">https://doi.org/10.1016/j.scitotenv.2017.01.198</a></p>
+<p>Ahuja, A. (2021, January 11). Mean Absolute Scaled Error (MASE) in
+Forecasting. Medium. <a href="https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968" class="uri">https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968</a></p>
+<p>Bootstrap resampling and tidy regression models. <a href="https://www.tidymodels.org/learn/statistics/bootstrap/" class="uri">https://www.tidymodels.org/learn/statistics/bootstrap/</a></p>
 </div>
 
    

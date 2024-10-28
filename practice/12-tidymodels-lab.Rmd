@@ -367,6 +367,7 @@ preped_recipe <- prep(rec, ames_workshop)
 ```{r eval=FALSE}
 ames_split_ex <- # YOUR CODE HERE
 ames_train_ex <- # YOUR CODE HERE
+ames_test_ex <- # YOUR CODE HERE
 ```
 
 ### Bootstrapping
@@ -399,7 +400,13 @@ ames_bootstrap_assessment <- # YOUR CODE HERE
 ::: info
 __Note:__ It is possible to run different models with different modelling decisions on the various analysis sets to see how well different models can explain the data, but for simplicity's sake, we're keeping it to one model here!
 
-`rsample` allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
+If you are interested in exploring this topic further and running multiple models, we suggest the following resources :
+- Blogpost: Machine learning in R with tidymodels, subheading: Training Models. (https://www.stepbystepdatascience.com/ml-with-tidymodels).
+-  Chapter 11 Comparing Models with Resampling from the textbook Tidy Modelling with R (https://www.tmwr.org/).
+- Blogpost: Hayes, A., Predictive performance via bootstrap variants. (https://www.alexpghayes.com/post/2018-05-03_performance-assessments-via-bootstrap-variants/)
+- Research paper: Silverman, B.W., Chan, L. & Vincent, K. Bootstrapping multiple systems estimates to account for model selection. Stat Comput 34, 44 (2024). https://doi.org/10.1007/s11222-023-10346-9
+
+Additionally, `rsample` allows us to calculate confidence intervals for models on bootstrap samples. Unfortunately, this is outside of the scope for this workshop, but the following [article](https://rsample.tidymodels.org/articles/Applications/Intervals.html) presents an interesting deep-dive into the topic.
 :::
 
 ## Fitting the Model
@@ -480,3 +487,10 @@ For a full list of references we used, please consult the slide deck accompanyin
 
 Toropova, A. P., & Toropov, A. A. (2017). The index of ideality of correlation: A criterion of predictability of QSAR models for skin permeability? Science of The Total Environment, 586, 466–472. https://doi.org/10.1016/j.scitotenv.2017.01.198
 
+De Cock, D. (2011). Ames, Iowa: Alternative to the Boston Housing Data as an End of Semester Regression Project. Journal of Statistics Education, 19(3). https://doi.org/10.1080/10691898.2011.11889627
+
+Toropova, A. P., & Toropov, A. A. (2017). The index of ideality of correlation: A criterion of predictability of QSAR models for skin permeability? Science of The Total Environment, 586, 466–472. https://doi.org/10.1016/j.scitotenv.2017.01.198
+
+Ahuja, A. (2021, January 11). Mean Absolute Scaled Error (MASE) in Forecasting. Medium. https://medium.com/@ashishdce/mean-absolute-scaled-error-mase-in-forecasting-8f3aecc21968
+
+Bootstrap resampling and tidy regression models. https://www.tidymodels.org/learn/statistics/bootstrap/
